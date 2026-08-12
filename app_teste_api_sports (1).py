@@ -186,7 +186,6 @@ def github_load_cache():
                     f"{response.text[:500]}"
                 ),
             )
-
         obj = response.json()
 
         encoded = obj.get(
@@ -223,6 +222,149 @@ def github_load_cache():
         )
 
 
+
+def github_commits_url():
+    return (
+        f"https://api.github.com/repos/"
+        f"{GITHUB_OWNER}/{GITHUB_REPO}/commits"
+    )
+
+
+def github_load_cache_at_commit(commit_sha):
+    """
+    Lê uma versão histórica do cache.json em um commit específico.
+    Isso serve somente para RECUPERAÇÃO; não chama a API-Sports.
+    """
+    if not GITHUB_TOKEN:
+        return None, None, "GITHUB_TOKEN não configurado."
+
+    try:
+        response = requests.get(
+            github_file_url(),
+            headers=github_headers(),
+            params={"ref": commit_sha},
+            timeout=20,
+        )
+
+        if response.status_code == 404:
+            return None, None, None
+        if not response.ok:
+            return (
+                None,
+                None,
+                f"GitHub histórico GET {response.status_code}: "
+                f"{response.text[:500]}",
+            )
+
+        obj = response.json()
+        encoded = obj.get("content", "")
+
+        if not encoded:
+            return None, obj.get("sha"), None
+
+        content = base64.b64decode(
+            encoded.replace("\n", "")
+        ).decode("utf-8")
+
+        return normalize_cache(json.loads(content)), obj.get("sha"), None
+
+    except Exception as e:
+        return None, None, str(e)
+
+
+def github_find_historical_detail(fixture_id, max_commits=20):
+    """
+    Procura uma versão anterior do cache.json que contenha o
+    enriquecimento da partida.
+
+    Importante:
+    - usa somente a API do GitHub;
+    - NÃO consome chamadas da API-Sports;
+    - não altera nada até o usuário mandar recuperar.
+    """
+    if not GITHUB_TOKEN:
+        return None, "GITHUB_TOKEN não configurado."
+
+    key = str(fixture_id)
+
+    try:
+        response = requests.get(
+            github_commits_url(),
+            headers=github_headers(),
+            params={
+                "path": GITHUB_FILE,
+                "sha": GITHUB_BRANCH,
+                "per_page": max_commits,
+            },
+            timeout=20,
+        )
+
+        if not response.ok:
+            return (
+                None,
+                f"GitHub commits {response.status_code}: "
+                f"{response.text[:500]}",
+            )
+
+        commits = response.json()
+
+        for commit in commits:
+            commit_sha = commit.get("sha")
+            if not commit_sha:
+                continue
+
+            historical_cache, _, error = (
+                github_load_cache_at_commit(commit_sha)
+            )
+
+            if error:
+                continue
+
+            if not historical_cache:
+                continue
+
+            historical_detail = (
+                historical_cache
+                .get("details", {})
+                .get(key)
+            )
+
+            if historical_detail:
+                return {
+                    "detail": historical_detail,
+                    "commit": commit_sha,
+                    "date": (
+                        commit.get("commit", {})
+                        .get("author", {})
+                        .get("date")
+                    ),
+                }, None
+
+        return None, None
+
+    except Exception as e:
+        return None, str(e)
+
+
+def restore_historical_detail(cache, fixture_id, historical):
+    """
+    Restaura um enriquecimento encontrado no histórico do GitHub.
+    Não chama API-Sports.
+    """
+    key = str(fixture_id)
+    if not historical or not historical.get("detail"):
+        return False
+
+    cache.setdefault("details", {})[key] = historical["detail"]
+
+    ok, save_error = github_save_cache(cache)
+
+    if not ok:
+        return False, save_error
+
+    return True, None
+
+
 # ============================================================
 # MESCLAGEM SEGURA DO CACHE
 # ============================================================
@@ -230,7 +372,6 @@ def github_load_cache():
 def merge_caches(remote, local):
     """
     Mescla o cache remoto do GitHub com o cache local.
-
     O objetivo é NUNCA perder informações já persistidas.
 
     Estruturas importantes:
@@ -314,7 +455,6 @@ def merge_caches(remote, local):
             merged_dates[key] = value
 
     merged["date_searches"] = merged_dates
-
     # --------------------------------------------------------
     # ÍNDICE DE FIXTURES
     # --------------------------------------------------------
@@ -398,7 +538,6 @@ def github_save_cache(cache):
     2. mescla remoto + local;
     3. usa o SHA mais recente;
     4. grava o resultado.
-
     Isso impede que uma operação baseada em cache antigo
     apague enriquecimentos já persistidos.
     """
@@ -524,7 +663,6 @@ def github_save_cache(cache):
     except Exception as e:
         return False, str(e)
 
-
 # ============================================================
 # API-SPORTS
 # ============================================================
@@ -629,7 +767,6 @@ def search_fixtures(
             False,
             None,
         )
-
     payload, error = api_get(
         "fixtures",
         {
@@ -650,7 +787,6 @@ def search_fixtures(
     )
 
     register_api_call(cache)
-
     cache.setdefault(
         "date_searches",
         {},
@@ -692,7 +828,6 @@ def search_fixtures(
             True,
             save_error,
         )
-
     return (
         response,
         True,
@@ -713,7 +848,6 @@ def enrich_fixture(
 
     Se já houver details:
         NÃO chama API-Sports.
-
     Se não houver:
         faz UMA chamada /fixtures?id=...
         e salva de forma segura.
@@ -797,7 +931,6 @@ def enrich_fixture(
             True,
             save_error,
         )
-
     return (
         cache["details"][key],
         True,
@@ -860,7 +993,6 @@ st.caption(
 st.subheader(
     "📊 Controle interno do teste"
 )
-
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -897,6 +1029,24 @@ with c3:
                 {},
             )
         ),
+    )
+
+with st.expander("ℹ️ Estado do cache", expanded=False):
+
+    st.write(
+        "As métricas acima são lidas diretamente do "
+        "cache persistente carregado do GitHub."
+    )
+
+    st.write(
+        "Uma partida só conta como enriquecida quando existe "
+        "um registro não vazio em `details`."
+    )
+
+    st.write(
+        "Se o registro sumiu, o aplicativo tenta primeiro "
+        "recuperá-lo do histórico do GitHub antes de oferecer "
+        "uma nova chamada à API-Sports."
     )
 
 
@@ -968,7 +1118,6 @@ if st.button(
         )
 
     else:
-
         if api_was_called:
 
             st.success(
@@ -1010,7 +1159,6 @@ if fixtures:
     )
 
     options = []
-
     for item in fixtures:
 
         fixture = item.get(
@@ -1031,7 +1179,6 @@ if fixtures:
         fixture_id = fixture.get(
             "id"
         )
-
         home = (
             teams
             .get("home", {})
@@ -1073,7 +1220,6 @@ if fixtures:
                 fixture_id,
             )
         )
-
     labels = [
         item[0]
         for item in options
@@ -1143,8 +1289,80 @@ if fixtures:
 
         st.warning(
             "🟡 Esta partida ainda não foi enriquecida "
-            "neste teste."
+            "neste cache."
         )
+
+        st.caption(
+            "O fixture está salvo, mas o registro em "
+            "`details` não está presente no cache atual."
+        )
+
+        # ----------------------------------------------------
+        # RECUPERAÇÃO DO HISTÓRICO
+        # ----------------------------------------------------
+        # Antes de gastar qualquer chamada da API-Sports,
+        # permite procurar uma versão anterior do cache no
+        # histórico do GitHub.
+        if st.button(
+            "♻️ Procurar enriquecimento anterior no GitHub",
+            type="secondary",
+        ):
+
+            with st.spinner(
+                "Procurando versões anteriores do cache..."
+            ):
+
+                historical, history_error = (
+                    github_find_historical_detail(
+                        selected_fixture_id
+                    )
+                )
+
+            if history_error:
+
+                st.error(history_error)
+
+            elif historical:
+
+                commit_date = historical.get("date") or "data desconhecida"
+
+                st.success(
+                    "🟢 Enriquecimento encontrado no histórico "
+                    f"do GitHub ({commit_date})."
+                )
+
+                if st.button(
+                    "✅ Restaurar esse enriquecimento",
+                    type="primary",
+                ):
+
+                    with st.spinner(
+                        "Restaurando sem chamar a API-Sports..."
+                    ):
+
+                        restored = restore_historical_detail(
+                            cache,
+                            selected_fixture_id,
+                            historical,
+                        )
+                    if restored is True:
+                        st.success(
+                            "Enriquecimento restaurado. "
+                            "Nenhuma chamada à API-Sports foi feita."
+                        )
+                        st.rerun()
+
+                    elif isinstance(restored, tuple) and not restored[0]:
+                        st.error(
+                            f"Não foi possível restaurar: {restored[1]}"
+                        )
+
+            else:
+
+                st.info(
+                    "Não encontrei um enriquecimento dessa partida "
+                    "nas últimas versões do cache.json no GitHub."
+                )
 
         if st.button(
             "🟣 Enriquecer somente esta partida",
@@ -1189,7 +1407,6 @@ if fixtures:
                 )
 
                 st.rerun()
-
             with st.spinner(
                 "Verificando cache e API-Sports..."
             ):
@@ -1210,7 +1427,6 @@ if fixtures:
                 )
 
             elif api_was_called:
-
                 st.success(
                     "Consulta à API-Sports realizada "
                     "e resultado salvo no GitHub."
@@ -1231,7 +1447,6 @@ if fixtures:
 # ============================================================
 # DIAGNÓSTICO
 # ============================================================
-
 with st.expander(
     "🔎 Diagnóstico"
 ):
