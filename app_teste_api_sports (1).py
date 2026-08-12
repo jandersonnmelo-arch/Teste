@@ -28,18 +28,52 @@ GITHUB_FILE = "dados_app/cache.json"
 # ============================================================
 # CAMPEONATOS PRÉ-SELECIONADOS
 # ============================================================
-# Somente estes campeonatos ficam disponíveis na seleção de
-# partidas. O filtro é aplicado localmente, sem gerar chamadas
-# adicionais à API-Sports.
-#
-# Os nomes abaixo contemplam as competições já definidas no app
-# e acrescentam Argentina e México.
-ALLOWED_LEAGUES = {
+# O filtro usa principalmente o ID da competição, porque a
+# API-Sports pode devolver nomes oficiais diferentes dos nomes
+# amigáveis mostrados na interface (ex.: "Serie B" em vez de
+# "Brasileirão Série B").
+ALLOWED_LEAGUE_IDS = {
+    # Brasil
+    71,   # Brasileirão Série A
+    72,   # Brasileirão Série B
+    73,   # Copa do Brasil
+
+    # América do Sul
+    13,   # CONMEBOL Libertadores
+    11,   # CONMEBOL Sudamericana
+    128,  # Liga Profesional Argentina
+
+    # México
+    262,  # Liga MX
+
+    # Europa
+    2,    # UEFA Champions League
+    3,    # UEFA Europa League
+    848,  # UEFA Conference League
+    39,   # Premier League
+    40,   # Championship
+    140,  # La Liga
+    78,   # Bundesliga
+    61,   # Ligue 1
+    135,  # Serie A (Itália)
+    88,   # Eredivisie
+    94,   # Primeira Liga
+
+    # Seleções
+    9,    # Copa América
+    1,    # Copa do Mundo
+}
+
+# Nomes são mantidos como fallback caso algum item não traga
+# o ID esperado no payload.
+ALLOWED_LEAGUE_NAMES = {
     "Brasileirão Série A",
     "Brasileirão Série B",
     "Copa do Brasil",
     "Copa Libertadores",
     "Copa Sul-Americana",
+    "CONMEBOL Libertadores",
+    "CONMEBOL Sudamericana",
     "UEFA Champions League",
     "UEFA Europa League",
     "UEFA Conference League",
@@ -49,41 +83,36 @@ ALLOWED_LEAGUES = {
     "Bundesliga",
     "Ligue 1",
     "Serie A",
+    "Serie B",
     "Eredivisie",
     "Primeira Liga",
-    "Copa América",
-    "Copa do Mundo",
     "Liga Profesional Argentina",
+    "Liga Profesional de Fútbol",
+    "Primera División",
+    "Primera Division",
     "Liga MX",
+    "Liga BBVA MX",
+    "Copa América",
+    "Copa America",
+    "Copa do Mundo",
+    "World Cup",
 }
 
-# Alguns retornos da API-Sports usam o nome oficial da competição.
-# Estes aliases fazem o filtro aceitar essas variações sem abrir
-# competições fora da lista pré-acertada.
-ALLOWED_LEAGUE_ALIASES = {
-    "CONMEBOL Libertadores": "Copa Libertadores",
-    "CONMEBOL Sudamericana": "Copa Sul-Americana",
-    "Primera División": "Liga Profesional Argentina",
-    "Primera Nacional": "Liga Profesional Argentina",
-    "Liga Profesional de Fútbol": "Liga Profesional Argentina",
-    "Primera Division": "Liga Profesional Argentina",
-    "Liga MX": "Liga MX",
-    "Liga BBVA MX": "Liga MX",
-    "World Cup": "Copa do Mundo",
-    "Copa America": "Copa América",
-}
-
-def league_is_allowed(league_name):
+def league_is_allowed(league):
     """Retorna True somente para campeonatos previamente autorizados."""
-    if not league_name:
+    if not isinstance(league, dict):
         return False
 
-    name = str(league_name).strip()
+    league_id = league.get("id")
+    if league_id is not None:
+        try:
+            if int(league_id) in ALLOWED_LEAGUE_IDS:
+                return True
+        except (TypeError, ValueError):
+            pass
 
-    if name in ALLOWED_LEAGUES:
-        return True
-
-    return name in ALLOWED_LEAGUE_ALIASES
+    league_name = str(league.get("name", "")).strip()
+    return league_name in ALLOWED_LEAGUE_NAMES
 
 
 def filter_allowed_fixtures(fixtures):
@@ -96,30 +125,8 @@ def filter_allowed_fixtures(fixtures):
     return [
         item
         for item in (fixtures or [])
-        if league_is_allowed(
-            item.get("league", {}).get("name")
-        )
+        if league_is_allowed(item.get("league", {}))
     ]
-
-
-# ============================================================
-# SECRETS
-# ============================================================
-
-def get_secret(name, default=""):
-    try:
-        return st.secrets.get(name, default)
-    except Exception:
-        return default
-
-
-API_KEY = (
-    get_secret("API_SPORTS_KEY")
-    or get_secret("API_FOOTBALL_KEY")
-)
-
-GITHUB_TOKEN = get_secret("GITHUB_TOKEN")
-
 
 # ============================================================
 # CACHE PADRÃO
@@ -1943,10 +1950,10 @@ with st.expander(
 ):
 
     st.write(
-        "Campeonatos liberados no filtro:"
+        "IDs de campeonatos liberados no filtro:"
     )
     st.write(
-        ", ".join(sorted(ALLOWED_LEAGUES))
+        ", ".join(str(x) for x in sorted(ALLOWED_LEAGUE_IDS))
     )
 
     st.write(
