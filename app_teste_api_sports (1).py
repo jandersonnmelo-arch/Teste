@@ -1,6 +1,7 @@
 import base64
 import json
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
 
 import requests
 import streamlit as st
@@ -17,6 +18,16 @@ st.set_page_config(
 )
 
 BASE_API = "https://v3.football.api-sports.io"
+
+# ============================================================
+# FUSO HORÁRIO OFICIAL DO APLICATIVO
+# ============================================================
+# A API-Sports normalmente trabalha com timestamps ISO-8601/UTC.
+# Toda exibição e toda referência de "hoje" no app passam pelo
+# horário oficial de Manaus.
+APP_TIMEZONE_NAME = "America/Manaus"
+APP_TIMEZONE = ZoneInfo(APP_TIMEZONE_NAME)
+APP_TIMEZONE_LABEL = "🇧🇷 Manaus (AM) — UTC-4"
 
 GITHUB_OWNER = "jandersonnmelo-arch"
 GITHUB_REPO = "Teste"
@@ -109,6 +120,242 @@ ALLOWED_LEAGUE_NAMES = {
     "World Cup",
 }
 
+# ============================================================
+# DATA / HORA — MANAUS
+# ============================================================
+
+def now_local():
+    """Retorna o instante atual no horário oficial de Manaus."""
+    return datetime.now(APP_TIMEZONE)
+
+
+def local_today():
+    """Data de hoje segundo o horário de Manaus."""
+    return now_local().date()
+
+
+def parse_fixture_datetime(value):
+    """
+    Converte o timestamp da API-Sports para datetime consciente
+    e normalizado no fuso de Manaus.
+
+    Exemplos aceitos:
+      2026-08-12T22:00:00+00:00
+      2026-08-12T22:00:00Z
+      timestamp sem timezone -> tratado como UTC
+    """
+    if not value:
+        return None
+
+    try:
+        raw = str(value).strip().replace("Z", "+00:00")
+        dt = datetime.fromisoformat(raw)
+
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
+        return dt.astimezone(APP_TIMEZONE)
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
+def format_fixture_local_datetime(value):
+    """Exibe a data/hora da partida no padrão brasileiro de Manaus."""
+    dt = parse_fixture_datetime(value)
+    if not dt:
+        return "Data/hora indisponível"
+
+    return dt.strftime("%d/%m/%Y %H:%M")
+
+
+def fixture_local_date(value):
+    """Retorna a data local da partida em Manaus."""
+    dt = parse_fixture_datetime(value)
+    return dt.date() if dt else None
+
+
+def fixture_status_info(fixture):
+    """
+    Produz um status amigável baseado no horário local e no status
+    oficial retornado pela API-Sports.
+    """
+    if not isinstance(fixture, dict):
+        return {
+            "code": "",
+            "label": "Status indisponível",
+            "kind": "unknown",
+            "local_dt": None,
+        }
+
+    local_dt = parse_fixture_datetime(fixture.get("date"))
+    status = fixture.get("status") or {}
+    code = str(status.get("short") or "").upper()
+    elapsed = status.get("elapsed")
+
+    finished_codes = {"FT", "AET", "PEN"}
+    live_codes = {"1H", "HT", "2H", "ET", "BT", "P", "LIVE", "INT", "SUSP"}
+    postponed_codes = {"PST"}
+    cancelled_codes = {"CANC", "ABD", "AWD", "WO"}
+
+    if code in finished_codes:
+        return {
+            "code": code,
+            "label": "✅ FINALIZADO",
+            "kind": "finished",
+            "local_dt": local_dt,
+        }
+
+    if code in cancelled_codes:
+        return {
+            "code": code,
+            "label": "⛔ CANCELADO/ENCERRADO",
+            "kind": "cancelled",
+            "local_dt": local_dt,
+        }
+
+    if code in postponed_codes:
+        return {
+            "code": code,
+            "label": "⏸️ ADIADO",
+            "kind": "postponed",
+            "local_dt": local_dt,
+        }
+
+    # Para jogos ao vivo, a API é a autoridade principal.
+    if code in live_codes:
+        minute_text = f" — {elapsed}'" if elapsed is not None else ""
+        return {
+            "code": code,
+            "label": f"🟢 AO VIVO{minute_text}",
+            "kind": "live",
+            "local_dt": local_dt,
+        }
+
+    # Fallback temporal para partidas futuras sem status reconhecido.
+    now = now_local()
+
+    if local_dt:
+        if local_dt <= now:
+            return {
+                "code": code,
+                "label": "🟢 AO VIVO / EM ANDAMENTO",
+                "kind": "live",
+                "local_dt": local_dt,
+            }
+
+        delta = local_dt - now
+        total_minutes = max(0, int(delta.total_seconds() // 60))
+
+        if local_dt.date() == now.date():
+            if total_minutes < 60:
+                label = f"🟡 COMEÇA EM {total_minutes} MIN"
+            else:
+                hours = total_minutes // 60
+                minutes = total_minutes % 60
+                if minutes:
+                    label = f"🔵 HOJE — EM {hours}H{minutes:02d}"
+                else:
+                    label = f"🔵 HOJE — EM {hours}H"
+
+            return {
+                "code": code,
+                "label": label,
+                "kind": "today",
+                "local_dt": local_dt,
+            }
+
+        tomorrow = now.date() + timedelta(days=1)
+        if local_dt.date() == tomorrow:
+            return {
+                "code": code,
+                "label": f"📅 AMANHÃ — {local_dt.strftime('%H:%M')}",
+                "kind": "tomorrow",
+                "local_dt": local_dt,
+            }
+
+        return {
+            "code": code,
+            "label": f"📆 {local_dt.strftime('%d/%m/%Y')} — {local_dt.strftime('%H:%M')}",
+            "kind": "future",
+            "local_dt": local_dt,
+        }
+
+    return {
+        "code": code,
+        "label": "⚪ HORÁRIO INDISPONÍVEL",
+        "kind": "unknown",
+        "local_dt": None,
+    }
+
+
+def fixture_score_text(item):
+    """Monta o placar atual/final quando a API-Sports o disponibiliza."""
+    score = item.get("score") or {}
+    goals = item.get("goals") or {}
+
+    home = goals.get("home")
+    away = goals.get("away")
+
+    if home is None:
+        home = score.get("fulltime", {}).get("home")
+    if away is None:
+        away = score.get("fulltime", {}).get("away")
+
+    if home is None or away is None:
+        return ""
+
+    return f"{home} x {away}"
+
+
+def fixture_display_label(item):
+    """
+    Label compacto e legível para celular.
+    Mostra campeonato + confronto + horário de Manaus + status.
+    """
+    fixture = item.get("fixture") or {}
+    league = item.get("league") or {}
+    teams = item.get("teams") or {}
+
+    fixture_id = fixture.get("id")
+    home = (teams.get("home") or {}).get("name", "Casa")
+    away = (teams.get("away") or {}).get("name", "Fora")
+    league_name = league.get("name", "Competição desconhecida")
+
+    local_dt = parse_fixture_datetime(fixture.get("date"))
+    status_info = fixture_status_info(fixture)
+    score = fixture_score_text(item)
+
+    time_text = local_dt.strftime("%H:%M") if local_dt else "--:--"
+    score_text = f" • ⚽ {score}" if score else ""
+
+    return (
+        f"🏆 {league_name}  |  ⚽ {home} x {away}  |  "
+        f"🕒 {time_text}  |  {status_info['label']}{score_text}"
+    )
+
+
+def fixture_short_label(item):
+    """Versão ainda mais curta para a lista de seleção."""
+    fixture = item.get("fixture") or {}
+    league = item.get("league") or {}
+    teams = item.get("teams") or {}
+
+    home = (teams.get("home") or {}).get("name", "Casa")
+    away = (teams.get("away") or {}).get("name", "Fora")
+    league_name = league.get("name", "Competição desconhecida")
+
+    local_dt = parse_fixture_datetime(fixture.get("date"))
+    status_info = fixture_status_info(fixture)
+    score = fixture_score_text(item)
+
+    time_text = local_dt.strftime("%H:%M") if local_dt else "--:--"
+    score_text = f" • ⚽ {score}" if score else ""
+
+    return (
+        f"🏆 {league_name}  •  {home} x {away}  •  "
+        f"{time_text}  •  {status_info['label']}{score_text}"
+    )
+
 def league_is_allowed(league):
     """Retorna True somente para campeonatos previamente autorizados."""
     if not isinstance(league, dict):
@@ -145,7 +392,7 @@ def filter_allowed_fixtures(fixtures):
 
 def empty_cache():
     return {
-        "version": 2,
+        "version": 3,
         "api_calls": 0,
         "last_api_call": None,
         "quota": {
@@ -1040,7 +1287,9 @@ def search_fixtures(
         e salva de forma segura.
     """
 
-    key = selected_date.isoformat()
+    # A chave inclui o fuso para impedir que um resultado obtido
+    # em outro timezone seja reutilizado como se fosse Manaus.
+    key = f"{selected_date.isoformat()}|{APP_TIMEZONE_NAME}"
 
     cached = (
         cache
@@ -1058,7 +1307,8 @@ def search_fixtures(
     payload, error = api_get(
         "fixtures",
         {
-            "date": key
+            "date": selected_date.isoformat(),
+            "timezone": APP_TIMEZONE_NAME,
         },
         cache=cache,
     )
@@ -1308,6 +1558,11 @@ st.caption(
     "descoberta, enriquecimento e persistência."
 )
 
+st.info(
+    f"🕐 **Horário oficial do aplicativo:** {APP_TIMEZONE_LABEL}  •  "
+    f"**Agora:** {now_local().strftime('%d/%m/%Y %H:%M')}"
+)
+
 
 # ============================================================
 # CONTROLE DE CONSUMO REAL
@@ -1504,7 +1759,7 @@ st.caption(
 
 selected_date = st.date_input(
     "Data",
-    value=date.today(),
+    value=local_today(),
 )
 
 
@@ -1625,22 +1880,101 @@ if fixtures:
         "2️⃣ Selecionar partida"
     )
 
+    # --------------------------------------------------------
+    # RESUMO RÁPIDO DA LISTA
+    # --------------------------------------------------------
+
+    league_groups = {}
+
+    for item in fixtures:
+        league = item.get("league") or {}
+        league_name = league.get(
+            "name",
+            "Competição desconhecida",
+        )
+        league_groups.setdefault(
+            league_name,
+            []
+        ).append(item)
+
+    st.caption(
+        f"📋 {len(fixtures)} partida(s) • "
+        f"🏆 {len(league_groups)} campeonato(s) • "
+        f"🕒 Horários em Manaus"
+    )
+
+    # --------------------------------------------------------
+    # LISTA VISUAL AGRUPADA POR CAMPEONATO
+    # --------------------------------------------------------
+    # No celular fica muito mais fácil identificar primeiro o
+    # campeonato e depois os jogos daquela competição.
+
+    for league_name in sorted(league_groups):
+        group = league_groups[league_name]
+
+        with st.expander(
+            f"🏆 {league_name} — {len(group)} jogo(s)",
+            expanded=True,
+        ):
+            for item in group:
+                fixture = item.get("fixture") or {}
+                teams = item.get("teams") or {}
+
+                fixture_id = fixture.get("id")
+                home = (
+                    teams.get("home") or {}
+                ).get(
+                    "name",
+                    "Casa",
+                )
+                away = (
+                    teams.get("away") or {}
+                ).get(
+                    "name",
+                    "Fora",
+                )
+
+                local_dt = parse_fixture_datetime(
+                    fixture.get("date")
+                )
+                status_info = fixture_status_info(
+                    fixture
+                )
+                score = fixture_score_text(item)
+
+                time_text = (
+                    local_dt.strftime("%H:%M")
+                    if local_dt
+                    else "--:--"
+                )
+
+                score_text = (
+                    f" • ⚽ {score}"
+                    if score
+                    else ""
+                )
+
+                st.markdown(
+                    f"**⚽ {home} x {away}**  "
+                    f"• 🕒 **{time_text}**  "
+                    f"• {status_info['label']}"
+                    f"{score_text}"
+                )
+
+    st.divider()
+
+    # --------------------------------------------------------
+    # SELETOR COMPACTO
+    # --------------------------------------------------------
+    # Mantemos o selectbox para preservar toda a lógica existente
+    # de enriquecimento, cache e restauração, mas agora com um
+    # label muito menor e muito mais legível.
+
     options = []
 
     for item in fixtures:
-
         fixture = item.get(
             "fixture",
-            {},
-        )
-
-        league = item.get(
-            "league",
-            {},
-        )
-
-        teams = item.get(
-            "teams",
             {},
         )
 
@@ -1648,44 +1982,9 @@ if fixtures:
             "id"
         )
 
-        home = (
-            teams
-            .get("home", {})
-            .get(
-                "name",
-                "Casa",
-            )
-        )
-
-        away = (
-            teams
-            .get("away", {})
-            .get(
-                "name",
-                "Fora",
-            )
-        )
-
-        league_name = league.get(
-            "name",
-            "Competição desconhecida",
-        )
-
-        date_text = fixture.get(
-            "date",
-            "",
-        )
-
-        label = (
-            f"{date_text} | "
-            f"{home} x {away} | "
-            f"{league_name} | "
-            f"ID {fixture_id}"
-        )
-
         options.append(
             (
-                label,
+                fixture_short_label(item),
                 fixture_id,
             )
         )
@@ -1696,7 +1995,7 @@ if fixtures:
     ]
 
     selected_label = st.selectbox(
-        "Partida",
+        "Escolha o jogo para analisar",
         labels,
     )
 
@@ -1704,10 +2003,67 @@ if fixtures:
         options
     )[selected_label]
 
-    st.info(
-        "Fixture identificado: "
-        f"{selected_fixture_id}"
+    # Exibe a partida selecionada de forma limpa.
+    selected_item = next(
+        (
+            item
+            for item in fixtures
+            if (
+                item.get("fixture", {})
+                .get("id")
+                == selected_fixture_id
+            )
+        ),
+        None,
     )
+
+    if selected_item:
+        selected_fixture = selected_item.get(
+            "fixture",
+            {}
+        )
+        selected_teams = selected_item.get(
+            "teams",
+            {}
+        )
+        selected_league = selected_item.get(
+            "league",
+            {}
+        )
+
+        selected_home = (
+            selected_teams.get("home") or {}
+        ).get(
+            "name",
+            "Casa",
+        )
+        selected_away = (
+            selected_teams.get("away") or {}
+        ).get(
+            "name",
+            "Fora",
+        )
+
+        selected_dt = parse_fixture_datetime(
+            selected_fixture.get("date")
+        )
+        selected_status = fixture_status_info(
+            selected_fixture
+        )
+
+        if selected_dt:
+            selected_when = selected_dt.strftime(
+                "%d/%m/%Y às %H:%M"
+            )
+        else:
+            selected_when = "data/hora indisponível"
+
+        st.success(
+            f"🏆 **{selected_league.get('name', 'Competição desconhecida')}**\n\n"
+            f"⚽ **{selected_home} x {selected_away}**\n\n"
+            f"🕒 **{selected_when} — Manaus (AM)**\n\n"
+            f"{selected_status['label']}  •  Fixture ID: {selected_fixture_id}"
+        )
 
     # --------------------------------------------------------
     # IMPORTANTE:
@@ -1832,7 +2188,6 @@ if fixtures:
                     )
 
                 if restored is True:
-                    # Confirma no GitHub antes de recarregar a interface.
                     verified_cache, _, verify_error = github_load_cache()
 
                     if verify_error:
@@ -1950,7 +2305,6 @@ if fixtures:
                 )
 
                 st.rerun()
-
 
 # ============================================================
 # DIAGNÓSTICO
