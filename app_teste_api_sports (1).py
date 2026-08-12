@@ -1,6 +1,6 @@
 import base64
 import json
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 
 import requests
 import streamlit as st
@@ -61,40 +61,75 @@ def empty_cache():
     }
 
 
-def normalize_cache(data):
+# ============================================================
+# API-SPORTS — STATUS / QUOTA
+# ============================================================
+
+def api_status():
     """
-    Garante que o cache tenha todas as estruturas esperadas,
-    inclusive quando o arquivo antigo não possuía algum campo.
+    Consulta o endpoint /status da API-Sports.
+
+    IMPORTANTE:
+    Segundo a documentação oficial, esta chamada NÃO
+    consome a quota diária.
     """
 
-    if not isinstance(data, dict):
-        data = empty_cache()
+    if not API_KEY:
+        return None, "API-Sports key não configurada."
 
-    default = empty_cache()
-
-    for key, value in default.items():
-        if key not in data:
-            data[key] = value
-
-    if not isinstance(data.get("date_searches"), dict):
-        data["date_searches"] = {}
-
-    if not isinstance(data.get("fixtures"), dict):
-        data["fixtures"] = {}
-
-    if not isinstance(data.get("details"), dict):
-        data["details"] = {}
+    headers = {
+        "x-apisports-key": API_KEY
+    }
 
     try:
-        data["api_calls"] = int(data.get("api_calls", 0))
-    except Exception:
-        data["api_calls"] = 0
+        r = requests.get(
+            f"{BASE_API}/status",
+            headers=headers,
+            timeout=20,
+        )
 
-    return data
+        try:
+            payload = r.json()
+        except Exception:
+            return None, (
+                f"Resposta inválida da API-Sports: "
+                f"{r.text[:500]}"
+            )
+
+        if not r.ok:
+            return None, payload
+
+        response = payload.get("response", {})
+        requests_info = response.get("requests", {})
+
+        current = requests_info.get("current")
+        limit_day = requests_info.get("limit_day")
+
+        # Também guarda os headers reais.
+        quota = {
+            "current": current,
+            "limit_day": limit_day,
+            "remaining": (
+                int(limit_day) - int(current)
+                if current is not None and limit_day is not None
+                else None
+            ),
+            "minute_limit": r.headers.get(
+                "X-RateLimit-Limit"
+            ),
+            "minute_remaining": r.headers.get(
+                "X-RateLimit-Remaining"
+            ),
+        }
+
+        return quota, None
+
+    except Exception as e:
+        return None, str(e)
 
 
 # ============================================================
-# GITHUB — CABEÇALHOS
+# GITHUB — HEADERS
 # ============================================================
 
 def github_headers():
@@ -104,6 +139,10 @@ def github_headers():
         "X-GitHub-Api-Version": "2026-03-10",
     }
 
+
+# ============================================================
+# GITHUB — URL
+# ============================================================
 
 def github_file_url():
     return (
@@ -120,11 +159,15 @@ def github_load_cache():
     """
     Lê dados_app/cache.json do GitHub.
 
-    Esta operação NÃO consome nenhuma chamada da API-Sports.
+    Não consome nenhuma chamada da API-Sports.
     """
 
     if not GITHUB_TOKEN:
-        return empty_cache(), None, "GITHUB_TOKEN não configurado."
+        return (
+            empty_cache(),
+            None,
+            "GITHUB_TOKEN não configurado."
+        )
 
     try:
         r = requests.get(
@@ -134,7 +177,6 @@ def github_load_cache():
             timeout=20,
         )
 
-        # Arquivo ainda não existe
         if r.status_code == 404:
             return empty_cache(), None, None
 
@@ -142,15 +184,13 @@ def github_load_cache():
             return (
                 empty_cache(),
                 None,
-                f"GitHub GET {r.status_code}: {r.text[:500]}",
+                f"GitHub GET {r.status_code}: "
+                f"{r.text[:500]}",
             )
 
         obj = r.json()
 
         encoded = obj.get("content", "")
-
-        if not encoded:
-            return empty_cache(), obj.get("sha"), None
 
         content = base64.b64decode(
             encoded.replace("\n", "")
@@ -158,12 +198,21 @@ def github_load_cache():
 
         data = json.loads(content)
 
-        data = normalize_cache(data)
+        if not isinstance(data, dict):
+            data = empty_cache()
 
-        return data, obj.get("sha"), None
+        return (
+            data,
+            obj.get("sha"),
+            None,
+        )
 
     except Exception as e:
-        return empty_cache(), None, str(e)
+        return (
+            empty_cache(),
+            None,
+            str(e),
+        )
 
 
 # ============================================================
@@ -173,17 +222,15 @@ def github_load_cache():
 def github_save_cache(cache, current_sha=None):
     """
     Cria ou atualiza dados_app/cache.json no GitHub.
-
-    Retorna:
-        sucesso, novo_sha, erro
     """
 
     if not GITHUB_TOKEN:
-        return False, current_sha, "GITHUB_TOKEN não configurado."
+        return (
+            False,
+            "GITHUB_TOKEN não configurado."
+        )
 
     try:
-        cache = normalize_cache(cache)
-
         content = json.dumps(
             cache,
             ensure_ascii=False,
@@ -200,8 +247,6 @@ def github_save_cache(cache, current_sha=None):
             "branch": GITHUB_BRANCH,
         }
 
-        # Para atualizar um arquivo existente, o GitHub
-        # exige o SHA atual.
         if current_sha:
             payload["sha"] = current_sha
 
@@ -215,37 +260,33 @@ def github_save_cache(cache, current_sha=None):
         if not r.ok:
             return (
                 False,
-                current_sha,
-                f"GitHub PUT {r.status_code}: {r.text[:500]}",
+                f"GitHub PUT {r.status_code}: "
+                f"{r.text[:500]}",
             )
 
-        obj = r.json()
-
-        new_sha = (
-            obj.get("content", {}).get("sha")
-            or current_sha
-        )
-
-        return True, new_sha, None
+        return True, None
 
     except Exception as e:
-        return False, current_sha, str(e)
+        return False, str(e)
 
 
 # ============================================================
-# API-SPORTS
+# API-SPORTS — CHAMADA REAL
 # ============================================================
 
 def api_get(endpoint, params):
     """
-    ÚNICO ponto do aplicativo que chama a API-Sports.
+    ÚNICO ponto do aplicativo que pode chamar
+    endpoints de dados da API-Sports.
 
-    Retorna:
-        payload, error
+    Também captura os headers reais de quota.
     """
 
     if not API_KEY:
-        return None, "API-Sports key não configurada."
+        return (
+            None,
+            "API-Sports key não configurada."
+        )
 
     headers = {
         "x-apisports-key": API_KEY
@@ -259,8 +300,28 @@ def api_get(endpoint, params):
             timeout=30,
         )
 
+        # ====================================================
+        # QUOTA REAL INFORMADA PELOS HEADERS
+        # ====================================================
+
+        st.session_state["api_quota_headers"] = {
+            "daily_limit": r.headers.get(
+                "x-ratelimit-requests-limit"
+            ),
+            "daily_remaining": r.headers.get(
+                "x-ratelimit-requests-remaining"
+            ),
+            "minute_limit": r.headers.get(
+                "X-RateLimit-Limit"
+            ),
+            "minute_remaining": r.headers.get(
+                "X-RateLimit-Remaining"
+            ),
+        }
+
         try:
             payload = r.json()
+
         except Exception:
             payload = {
                 "errors": {
@@ -279,24 +340,16 @@ def api_get(endpoint, params):
 
 
 # ============================================================
-# CONTROLE DE CHAMADAS
+# CONTROLE INTERNO DE CHAMADAS
 # ============================================================
 
 def register_api_call(cache):
-    """
-    Registra uma chamada feita pelo aplicativo à API-Sports.
-    """
-
-    cache = normalize_cache(cache)
-
-    cache["api_calls"] = (
-        int(cache.get("api_calls", 0)) + 1
-    )
+    cache["api_calls"] = int(
+        cache.get("api_calls", 0)
+    ) + 1
 
     cache["last_api_call"] = (
-        datetime.now(timezone.utc)
-        .isoformat()
-        .replace("+00:00", "Z")
+        datetime.utcnow().isoformat() + "Z"
     )
 
 
@@ -304,20 +357,21 @@ def register_api_call(cache):
 # CACHE DE PARTIDAS POR DATA
 # ============================================================
 
-def search_fixtures(cache, sha, selected_date):
+def search_fixtures(
+    cache,
+    sha,
+    selected_date,
+):
     """
-    Procura primeiro no cache persistente.
+    Procura primeiro no GitHub.
 
-    Se a data já existir:
+    Se já existir a data no cache:
         NÃO chama API-Sports.
 
-    Se não existir:
+    Caso contrário:
         faz UMA chamada /fixtures?date=...
-        registra a chamada
-        salva o resultado no GitHub.
+        e salva o resultado.
     """
-
-    cache = normalize_cache(cache)
 
     key = selected_date.isoformat()
 
@@ -327,10 +381,6 @@ def search_fixtures(cache, sha, selected_date):
         .get(key)
     )
 
-    # ========================================================
-    # CACHE HIT
-    # ========================================================
-
     if cached is not None:
         return (
             cached,
@@ -339,54 +389,29 @@ def search_fixtures(cache, sha, selected_date):
             None,
         )
 
-    # ========================================================
-    # API-SPORTS
-    # ========================================================
-
     payload, error = api_get(
         "fixtures",
         {"date": key},
     )
 
-    # A tentativa de chamada aconteceu.
-    register_api_call(cache)
-
-    # ========================================================
-    # ERRO DA API
-    # ========================================================
-
     if error:
-
-        # Mesmo com erro, tenta persistir o contador.
-        ok, new_sha, save_error = github_save_cache(
-            cache,
-            sha,
-        )
-
-        if not ok:
-            return (
-                None,
-                sha,
-                True,
-                f"{error} | Falha ao salvar contador: {save_error}",
-            )
-
         return (
             None,
-            new_sha,
+            sha,
             True,
             error,
         )
 
-    # ========================================================
-    # RESULTADO
-    # ========================================================
+    response = payload.get(
+        "response",
+        [],
+    )
 
-    response = payload.get("response", [])
+    register_api_call(cache)
 
     cache.setdefault(
         "date_searches",
-        {},
+        {}
     )[key] = response
 
     # Indexa cada fixture pelo ID
@@ -394,7 +419,7 @@ def search_fixtures(cache, sha, selected_date):
 
         fixture = item.get(
             "fixture",
-            {},
+            {}
         )
 
         fixture_id = fixture.get("id")
@@ -403,14 +428,10 @@ def search_fixtures(cache, sha, selected_date):
 
             cache.setdefault(
                 "fixtures",
-                {},
+                {}
             )[str(fixture_id)] = item
 
-    # ========================================================
-    # PERSISTÊNCIA
-    # ========================================================
-
-    ok, new_sha, save_error = github_save_cache(
+    ok, save_error = github_save_cache(
         cache,
         sha,
     )
@@ -423,9 +444,11 @@ def search_fixtures(cache, sha, selected_date):
             save_error,
         )
 
+    # Depois do PUT o SHA mudou.
+    # Na próxima operação o app recarregará o arquivo.
     return (
         response,
-        new_sha,
+        None,
         True,
         None,
     )
@@ -435,7 +458,11 @@ def search_fixtures(cache, sha, selected_date):
 # DETALHAMENTO DE UMA PARTIDA
 # ============================================================
 
-def enrich_fixture(cache, sha, fixture_id):
+def enrich_fixture(
+    cache,
+    sha,
+    fixture_id,
+):
     """
     Procura primeiro no cache persistente.
 
@@ -444,11 +471,7 @@ def enrich_fixture(cache, sha, fixture_id):
 
     Se não houver:
         faz UMA chamada /fixtures?id=...
-        registra a chamada
-        salva o resultado.
     """
-
-    cache = normalize_cache(cache)
 
     key = str(fixture_id)
 
@@ -458,10 +481,6 @@ def enrich_fixture(cache, sha, fixture_id):
         .get(key)
     )
 
-    # ========================================================
-    # CACHE HIT
-    # ========================================================
-
     if existing is not None:
         return (
             existing,
@@ -470,61 +489,32 @@ def enrich_fixture(cache, sha, fixture_id):
             None,
         )
 
-    # ========================================================
-    # API-SPORTS
-    # ========================================================
-
     payload, error = api_get(
         "fixtures",
         {"id": fixture_id},
     )
 
-    # Registra a chamada feita
-    register_api_call(cache)
-
-    # ========================================================
-    # ERRO
-    # ========================================================
-
     if error:
-
-        ok, new_sha, save_error = github_save_cache(
-            cache,
-            sha,
-        )
-
-        if not ok:
-            return (
-                None,
-                sha,
-                True,
-                f"{error} | Falha ao salvar contador: {save_error}",
-            )
-
         return (
             None,
-            new_sha,
+            sha,
             True,
             error,
         )
-
-    # ========================================================
-    # RESULTADO
-    # ========================================================
 
     response = payload.get(
         "response",
         [],
     )
 
+    register_api_call(cache)
+
     if not response:
 
-        # Guarda inclusive resposta vazia.
-        # Assim a mesma partida não será consultada
-        # infinitamente.
+        # Guardamos inclusive o resultado vazio.
         cache.setdefault(
             "details",
-            {},
+            {}
         )[key] = {
             "response": [],
             "errors": payload.get(
@@ -538,7 +528,7 @@ def enrich_fixture(cache, sha, fixture_id):
 
         cache.setdefault(
             "details",
-            {},
+            {}
         )[key] = {
             "response": response,
             "errors": payload.get(
@@ -548,11 +538,7 @@ def enrich_fixture(cache, sha, fixture_id):
             "empty": False,
         }
 
-    # ========================================================
-    # PERSISTÊNCIA
-    # ========================================================
-
-    ok, new_sha, save_error = github_save_cache(
+    ok, save_error = github_save_cache(
         cache,
         sha,
     )
@@ -567,7 +553,7 @@ def enrich_fixture(cache, sha, fixture_id):
 
     return (
         cache["details"][key],
-        new_sha,
+        None,
         True,
         None,
     )
@@ -590,14 +576,20 @@ if not API_KEY:
 if not GITHUB_TOKEN:
 
     st.warning(
-        "O Secret GITHUB_TOKEN ainda não está configurado. "
-        "O teste poderá consultar a API-Sports, mas não terá "
-        "persistência real no GitHub."
+        "O Secret GITHUB_TOKEN ainda não está "
+        "configurado. O teste poderá consultar "
+        "a API-Sports, mas não terá persistência "
+        "real no GitHub."
     )
 
 
-cache, cache_sha, cache_error = github_load_cache()
+# ============================================================
+# CARREGA CACHE PERSISTENTE
+# ============================================================
 
+cache, cache_sha, cache_error = (
+    github_load_cache()
+)
 
 if cache_error:
 
@@ -607,7 +599,11 @@ if cache_error:
     )
 
 
-cache = normalize_cache(cache)
+# ============================================================
+# CONSULTA STATUS REAL DA API
+# ============================================================
+
+api_quota, api_quota_error = api_status()
 
 
 # ============================================================
@@ -625,28 +621,173 @@ st.caption(
 
 
 # ============================================================
-# PAINEL DE CONTROLE
+# STATUS REAL DA API
 # ============================================================
 
 st.subheader(
-    "📊 Controle de chamadas"
+    "🟢 Consumo real da API-Sports"
+)
+
+if api_quota:
+
+    current = api_quota.get(
+        "current"
+    )
+
+    limit_day = api_quota.get(
+        "limit_day"
+    )
+
+    remaining = api_quota.get(
+        "remaining"
+    )
+
+    q1, q2, q3 = st.columns(3)
+
+    with q1:
+
+        st.metric(
+            "Chamadas hoje",
+            current
+            if current is not None
+            else "—",
+        )
+
+    with q2:
+
+        st.metric(
+            "Restantes hoje",
+            remaining
+            if remaining is not None
+            else "—",
+        )
+
+    with q3:
+
+        st.metric(
+            "Limite diário",
+            limit_day
+            if limit_day is not None
+            else "—",
+        )
+
+    if (
+        current is not None
+        and limit_day
+        and int(limit_day) > 0
+    ):
+
+        usage_percent = (
+            int(current)
+            / int(limit_day)
+        ) * 100
+
+        st.progress(
+            min(
+                usage_percent / 100,
+                1.0,
+            )
+        )
+
+        st.caption(
+            f"Uso diário real: "
+            f"{usage_percent:.1f}%"
+        )
+
+    minute_remaining = api_quota.get(
+        "minute_remaining"
+    )
+
+    minute_limit = api_quota.get(
+        "minute_limit"
+    )
+
+    if (
+        minute_remaining is not None
+        and minute_limit is not None
+    ):
+
+        st.caption(
+            f"Limite por minuto: "
+            f"{minute_remaining} "
+            f"de {minute_limit} chamadas restantes."
+        )
+
+else:
+
+    if api_quota_error:
+
+        st.warning(
+            "Não foi possível consultar o "
+            f"status da API-Sports: "
+            f"{api_quota_error}"
+        )
+
+    # Fallback para os headers da última
+    # chamada real feita nesta sessão.
+    header_quota = st.session_state.get(
+        "api_quota_headers"
+    )
+
+    if header_quota:
+
+        st.info(
+            "Saldo abaixo baseado nos headers "
+            "da última chamada real da API."
+        )
+
+        h1, h2, h3 = st.columns(3)
+
+        with h1:
+
+            st.metric(
+                "Restantes hoje",
+                header_quota.get(
+                    "daily_remaining",
+                    "—",
+                ),
+            )
+
+        with h2:
+
+            st.metric(
+                "Limite diário",
+                header_quota.get(
+                    "daily_limit",
+                    "—",
+                ),
+            )
+
+        with h3:
+
+            st.metric(
+                "Restantes/minuto",
+                header_quota.get(
+                    "minute_remaining",
+                    "—",
+                ),
+            )
+
+
+# ============================================================
+# PAINEL DE CONTROLE INTERNO
+# ============================================================
+
+st.subheader(
+    "📊 Controle interno do teste"
 )
 
 c1, c2, c3 = st.columns(3)
 
-
 with c1:
 
     st.metric(
-        "Chamadas API-Sports feitas",
-        int(
-            cache.get(
-                "api_calls",
-                0,
-            )
+        "Chamadas API-Sports registradas pelo app",
+        cache.get(
+            "api_calls",
+            0,
         ),
     )
-
 
 with c2:
 
@@ -659,7 +800,6 @@ with c2:
             )
         ),
     )
-
 
 with c3:
 
@@ -674,10 +814,12 @@ with c3:
     )
 
 
-if cache.get("last_api_call"):
+if cache.get(
+    "last_api_call"
+):
 
     st.caption(
-        "Última chamada API-Sports: "
+        f"Última chamada registrada pelo app: "
         f"{cache['last_api_call']}"
     )
 
@@ -690,7 +832,6 @@ st.subheader(
     "1️⃣ Buscar partidas"
 )
 
-
 selected_date = st.date_input(
     "Data",
     value=date.today(),
@@ -702,26 +843,26 @@ if st.button(
     type="primary",
 ):
 
-    # Sempre recarrega o cache imediatamente antes
-    # da operação.
+    # Recarrega o cache antes da operação.
     cache, cache_sha, cache_error = (
         github_load_cache()
     )
 
     if cache_error:
 
-        st.error(cache_error)
+        st.error(
+            cache_error
+        )
+
         st.stop()
 
-    cache = normalize_cache(cache)
-
     with st.spinner(
-        "Verificando cache/API..."
+        "Consultando cache/API..."
     ):
 
         (
             fixtures,
-            new_sha,
+            cache_sha,
             api_was_called,
             error,
         ) = search_fixtures(
@@ -732,52 +873,40 @@ if st.button(
 
     if error:
 
-        st.error(str(error))
-        st.stop()
+        st.error(
+            str(error)
+        )
 
-
-    if fixtures is None:
+    elif fixtures is None:
 
         st.error(
             "Não foi possível obter as partidas."
         )
 
-        st.stop()
-
-
-    # Guarda as partidas para a próxima execução.
-    st.session_state["fixtures"] = fixtures
-
-    st.session_state["selected_date"] = (
-        selected_date.isoformat()
-    )
-
-
-    # ========================================================
-    # RESULTADO DA OPERAÇÃO
-    # ========================================================
-
-    if api_was_called:
-
-        st.success(
-            f"Retornaram {len(fixtures)} partidas. "
-            "Esta operação consultou a API-Sports "
-            "e atualizou o cache."
-        )
-
     else:
 
-        st.info(
-            f"Retornaram {len(fixtures)} partidas "
-            "a partir do CACHE — nenhuma chamada "
-            "à API-Sports foi feita."
-        )
+        if api_was_called:
 
+            st.success(
+                f"Retornaram {len(fixtures)} partidas. "
+                "Esta operação consultou a API-Sports."
+            )
 
-    # Recarrega a página para que os contadores
-    # sejam exibidos imediatamente com os dados
-    # persistidos.
-    st.rerun()
+        else:
+
+            st.info(
+                f"Retornaram {len(fixtures)} partidas "
+                "a partir do CACHE — nenhuma chamada "
+                "à API-Sports foi feita."
+            )
+
+        st.session_state[
+            "fixtures"
+        ] = fixtures
+
+        st.session_state[
+            "selected_date"
+        ] = selected_date.isoformat()
 
 
 # ============================================================
@@ -786,7 +915,7 @@ if st.button(
 
 fixtures = st.session_state.get(
     "fixtures",
-    [],
+    []
 )
 
 
@@ -802,20 +931,22 @@ if fixtures:
 
         fixture = item.get(
             "fixture",
-            {},
+            {}
         )
 
         league = item.get(
             "league",
-            {},
+            {}
         )
 
         teams = item.get(
             "teams",
-            {},
+            {}
         )
 
-        fixture_id = fixture.get("id")
+        fixture_id = fixture.get(
+            "id"
+        )
 
         home = (
             teams
@@ -853,159 +984,115 @@ if fixtures:
             )
         )
 
+    labels = [
+        item[0]
+        for item in options
+    ]
 
-    if options:
+    selected_label = st.selectbox(
+        "Partida",
+        labels,
+    )
 
-        labels = [
-            item[0]
-            for item in options
-        ]
+    selected_fixture_id = dict(
+        options
+    )[selected_label]
 
-        selected_label = st.selectbox(
-            "Partida",
-            labels,
-        )
+    st.info(
+        f"Fixture identificado: "
+        f"{selected_fixture_id}"
+    )
 
-        selected_fixture_id = dict(
-            options
-        )[selected_label]
+    cached_detail = (
+        cache
+        .get("details", {})
+        .get(str(selected_fixture_id))
+    )
 
+    if cached_detail is not None:
 
-        st.info(
-            "Fixture identificado: "
-            f"{selected_fixture_id}"
-        )
+        if cached_detail.get(
+            "empty"
+        ):
 
-
-        # ====================================================
-        # CONFERE CACHE NOVAMENTE
-        # ====================================================
-
-        # O cache usado pela tela é recarregado para evitar
-        # trabalhar com uma cópia antiga depois de outra
-        # operação.
-        current_cache, current_sha, current_error = (
-            github_load_cache()
-        )
-
-        if current_error:
-
-            st.error(current_error)
-            st.stop()
-
-        current_cache = normalize_cache(
-            current_cache
-        )
-
-
-        cached_detail = (
-            current_cache
-            .get("details", {})
-            .get(str(selected_fixture_id))
-        )
-
-
-        # ====================================================
-        # PARTIDA JÁ ENRIQUECIDA
-        # ====================================================
-
-        if cached_detail is not None:
-
-            if cached_detail.get("empty"):
-
-                st.warning(
-                    "Esta partida já foi consultada "
-                    "e a API-Sports retornou resposta vazia. "
-                    "O resultado está persistido no GitHub."
-                )
-
-            else:
-
-                st.success(
-                    "🟢 Esta partida já está enriquecida "
-                    "no cache persistente. "
-                    "Não é necessário fazer outra chamada."
-                )
-
-
-        # ====================================================
-        # PARTIDA AINDA NÃO ENRIQUECIDA
-        # ====================================================
+            st.warning(
+                "Esta partida já foi consultada "
+                "e a API-Sports retornou resposta "
+                "vazia. O resultado está persistido "
+                "no GitHub."
+            )
 
         else:
 
-            st.warning(
-                "🟡 Esta partida ainda não foi enriquecida "
-                "neste teste."
+            st.success(
+                "🟢 Esta partida já está enriquecida "
+                "no cache persistente. "
+                "Não é necessário fazer outra chamada."
             )
 
+    else:
 
-            if st.button(
-                "🟣 Enriquecer somente esta partida",
-                type="primary",
-            ):
+        st.warning(
+            "🟡 Esta partida ainda não foi enriquecida "
+            "neste teste."
+        )
 
-                # Recarrega imediatamente antes da operação.
-                cache, cache_sha, cache_error = (
-                    github_load_cache()
+        if st.button(
+            "🟣 Enriquecer somente esta partida",
+            type="primary",
+        ):
+
+            # Recarrega o cache imediatamente antes
+            # de gastar uma possível chamada.
+            cache, cache_sha, cache_error = (
+                github_load_cache()
+            )
+
+            if cache_error:
+
+                st.error(
+                    cache_error
                 )
 
-                if cache_error:
+                st.stop()
 
-                    st.error(cache_error)
-                    st.stop()
+            with st.spinner(
+                "Verificando cache e API-Sports..."
+            ):
 
-                cache = normalize_cache(cache)
+                (
+                    details,
+                    cache_sha,
+                    api_was_called,
+                    error,
+                ) = enrich_fixture(
+                    cache,
+                    cache_sha,
+                    selected_fixture_id,
+                )
 
+            if error:
 
-                with st.spinner(
-                    "Verificando cache e API-Sports..."
-                ):
+                st.error(
+                    str(error)
+                )
 
-                    (
-                        details,
-                        new_sha,
-                        api_was_called,
-                        error,
-                    ) = enrich_fixture(
-                        cache,
-                        cache_sha,
-                        selected_fixture_id,
-                    )
+            elif api_was_called:
 
+                st.success(
+                    "Consulta à API-Sports realizada "
+                    "e resultado salvo no GitHub."
+                )
 
-                if error:
+                st.rerun()
 
-                    st.error(str(error))
-                    st.stop()
+            else:
 
+                st.info(
+                    "O resultado já estava no cache. "
+                    "Nenhuma chamada à API-Sports foi feita."
+                )
 
-                if details is None:
-
-                    st.error(
-                        "Não foi possível obter "
-                        "o detalhamento da partida."
-                    )
-
-                    st.stop()
-
-
-                if api_was_called:
-
-                    st.success(
-                        "Consulta à API-Sports realizada "
-                        "e resultado salvo no GitHub."
-                    )
-
-                else:
-
-                    st.info(
-                        "O resultado já estava no cache. "
-                        "Nenhuma chamada à API-Sports foi feita."
-                    )
-
-
-                # Atualiza a interface e os contadores.
                 st.rerun()
 
 
@@ -1034,8 +1121,17 @@ with st.expander(
     )
 
     st.write(
-        "O contador acima registra somente chamadas "
-        "feitas ao endpoint API-Sports pelo próprio app."
+        "O contador interno registra somente chamadas "
+        "a endpoints de dados feitas pelo próprio app."
+    )
+
+    st.write(
+        "O consumo oficial da API é obtido pelo endpoint "
+        "`/status` e pelos headers enviados pela API."
+    )
+
+    st.write(
+        "A consulta `/status` não consome a quota diária."
     )
 
     st.write(
@@ -1050,12 +1146,12 @@ with st.expander(
 
     st.write(
         "Se uma data já estiver em `date_searches`, "
-        "uma nova busca para essa data não deve "
-        "gerar chamada à API-Sports."
+        "uma nova busca para essa data não deve gerar "
+        "chamada à API-Sports."
     )
 
     st.write(
         "Se uma partida já estiver em `details`, "
-        "o botão de enriquecimento não deve "
-        "gerar uma nova chamada."
+        "o botão de enriquecimento não deve gerar "
+        "nova chamada."
     )
