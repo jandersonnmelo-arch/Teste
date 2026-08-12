@@ -392,7 +392,7 @@ def filter_allowed_fixtures(fixtures):
 
 def empty_cache():
     return {
-        "version": 3,
+        "version": 5,
         "api_calls": 0,
         "last_api_call": None,
         "quota": {
@@ -713,22 +713,70 @@ def github_find_historical_detail(fixture_id, max_commits=20):
 def restore_historical_detail(cache, fixture_id, historical):
     """
     Restaura um enriquecimento encontrado no histórico do GitHub.
-    Não chama API-Sports.
+
+    A restauração é feita sobre uma leitura FRESCA do GitHub para
+    evitar que um cache antigo sobrescreva ou esconda o detalhe
+    histórico.
+
+    Não chama a API-Sports.
     """
     key = str(fixture_id)
 
     if not historical or not historical.get("detail"):
         return False
 
-    cache.setdefault("details", {})[key] = historical["detail"]
+    historical_detail = historical["detail"]
 
-    ok, save_error = github_save_cache(cache)
+    # --------------------------------------------------------
+    # 1. Leitura fresca do GitHub
+    # --------------------------------------------------------
+    fresh_cache, _, fresh_error = github_load_cache()
+
+    if fresh_error:
+        return False, fresh_error
+
+    if fresh_cache is None:
+        return False, "Não foi possível carregar o cache atual do GitHub."
+
+    # --------------------------------------------------------
+    # 2. Injeta o detalhe diretamente no cache mais recente.
+    # --------------------------------------------------------
+    fresh_cache = normalize_cache(fresh_cache)
+    fresh_cache.setdefault("details", {})[key] = historical_detail
+
+    # --------------------------------------------------------
+    # 3. Grava usando a proteção normal de merge/conflito.
+    # --------------------------------------------------------
+    ok, save_error = github_save_cache(fresh_cache)
 
     if not ok:
         return False, save_error
 
-    # Sucesso: o chamador usa `restored is True` para
-    # confirmar a restauração antes de executar st.rerun().
+    # --------------------------------------------------------
+    # 4. Confirma imediatamente no GitHub.
+    # --------------------------------------------------------
+    verified_cache, _, verify_error = github_load_cache()
+
+    if verify_error:
+        return False, (
+            "A restauração foi enviada, mas não foi possível "
+            f"confirmar a leitura do GitHub: {verify_error}"
+        )
+
+    verified_detail = (
+        verified_cache
+        .get("details", {})
+        .get(key)
+        if verified_cache
+        else None
+    )
+
+    if verified_detail is None:
+        return False, (
+            "A gravação retornou sucesso, mas o detalhe "
+            f"do fixture {key} não apareceu no cache do GitHub."
+        )
+
     return True
 
 
@@ -1516,19 +1564,17 @@ if cache_error:
     st.stop()
 
 
-# Atualiza o consumo diário real sem gastar a cota diária.
-# O endpoint /status é específico para consultar o estado da conta.
+# IMPORTANTE:
+# A consulta /status NÃO é executada automaticamente a cada rerun.
+# Isso evita uma requisição extra sempre que o usuário troca de
+# partida, restaura histórico ou o Streamlit reexecuta a página.
+#
+# O consumo real continua disponível no botão:
+# "🔄 Atualizar consumo real".
+#
+# Os valores exibidos inicialmente são o último snapshot persistido.
 if "quota_status_loaded" not in st.session_state:
     st.session_state["quota_status_loaded"] = False
-
-if not st.session_state["quota_status_loaded"]:
-    _, quota_status_error = api_status(cache)
-    st.session_state["quota_status_loaded"] = True
-
-    # Persiste apenas o snapshot de quota se ele trouxe dados.
-    # Não registra isso como chamada da API-Sports.
-    if not quota_status_error:
-        github_save_cache(cache)
 
 
 # ============================================================
@@ -1570,6 +1616,13 @@ st.info(
 
 st.subheader(
     "🟢 Consumo real da API-Sports"
+)
+
+st.caption(
+    "Os valores abaixo mostram o último snapshot real salvo da conta. "
+    "Para consultar o consumo atual da API-Sports, use "
+    "🔄 Atualizar consumo real. O contador interno registra somente "
+    "chamadas de dados feitas pelo próprio aplicativo."
 )
 
 quota = cache.get("quota", {})
@@ -1634,9 +1687,22 @@ else:
     )
 
 if quota.get("updated_at"):
+    quota_updated = quota["updated_at"]
+
+    try:
+        quota_dt = datetime.fromisoformat(
+            str(quota_updated).replace("Z", "+00:00")
+        ).astimezone(APP_TIMEZONE)
+
+        quota_updated_display = quota_dt.strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
+    except (TypeError, ValueError, OverflowError):
+        quota_updated_display = str(quota_updated)
+
     st.caption(
         "Consumo real atualizado em: "
-        f"{quota['updated_at']}"
+        f"{quota_updated_display} — Manaus (AM)"
     )
 
 if st.button(
@@ -2188,34 +2254,16 @@ if fixtures:
                     )
 
                 if restored is True:
-                    verified_cache, _, verify_error = github_load_cache()
+                    st.session_state["historical_detail"] = None
+                    st.session_state["historical_fixture_id"] = None
 
-                    if verify_error:
-                        st.error(
-                            "A gravação foi enviada, mas não foi possível "
-                            f"confirmar o cache no GitHub: {verify_error}"
-                        )
-                    elif (
-                        verified_cache
-                        .get("details", {})
-                        .get(str(selected_fixture_id))
-                        is not None
-                    ):
-                        st.session_state["historical_detail"] = None
-                        st.session_state["historical_fixture_id"] = None
-                        st.success(
-                            "✅ Enriquecimento restaurado e confirmado no "
-                            "cache do GitHub. Nenhuma chamada à API-Sports "
-                            "foi feita."
-                        )
-                        st.rerun()
-                    else:
-                        st.error(
-                            "A gravação retornou sucesso, mas o registro "
-                            "não apareceu no cache do GitHub após a leitura "
-                            "de confirmação. Nenhuma nova chamada à API-Sports "
-                            "foi feita."
-                        )
+                    st.success(
+                        "✅ Enriquecimento restaurado e confirmado "
+                        "no cache do GitHub. Nenhuma chamada à "
+                        "API-Sports foi feita."
+                    )
+                    st.rerun()
+
                 elif isinstance(restored, tuple) and not restored[0]:
                     st.error(
                         f"Não foi possível restaurar: {restored[1]}"
@@ -2224,6 +2272,7 @@ if fixtures:
                     st.error(
                         "Não foi possível restaurar o enriquecimento histórico."
                     )
+
 
         if st.button(
             "🟣 Enriquecer somente esta partida",
