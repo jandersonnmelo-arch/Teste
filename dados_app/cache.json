@@ -3,12 +3,12 @@
   "api_calls": 0,
   "last_api_call": null,
   "quota": {
-    "daily_used": null,
-    "daily_limit": null,
-    "daily_remaining": null,
+    "daily_used": 62,
+    "daily_limit": 100,
+    "daily_remaining": 38,
     "minute_limit": null,
     "minute_remaining": null,
-    "updated_at": null
+    "updated_at": "2026-08-12T22:35:08.204511Z"
   },
   "date_searches": {},
   "fixtures": {},
