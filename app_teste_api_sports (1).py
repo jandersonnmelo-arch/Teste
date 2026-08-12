@@ -2339,12 +2339,48 @@ if fixtures:
 
             elif api_was_called:
 
-                st.success(
-                    "Consulta à API-Sports realizada "
-                    "e resultado salvo no GitHub."
-                )
+                # ------------------------------------------------
+                # CONFIRMAÇÃO PÓS-GRAVAÇÃO
+                # ------------------------------------------------
+                # Não fazemos rerun imediatamente: o rerun pode esconder
+                # o resultado do teste e dificultar a identificação de uma
+                # falha de persistência. Primeiro relemos o GitHub e
+                # confirmamos que o detail realmente existe.
+                verified_cache, _, verify_error = github_load_cache()
 
-                st.rerun()
+                if verify_error:
+                    st.error(
+                        "⚠️ A API-Sports respondeu, mas não foi possível "
+                        f"confirmar a persistência no GitHub: {verify_error}"
+                    )
+                else:
+                    verified_detail = (
+                        (verified_cache or {})
+                        .get("details", {})
+                        .get(str(selected_fixture_id))
+                    )
+
+                    if verified_detail is None:
+                        st.error(
+                            "❌ A API-Sports foi consultada, mas o "
+                            f"enriquecimento do fixture {selected_fixture_id} "
+                            "não apareceu no cache do GitHub após a gravação. "
+                            "Nenhum rerun será feito para não esconder o erro."
+                        )
+                    else:
+                        # Mantém a tela atual coerente com o que realmente
+                        # está persistido no GitHub.
+                        cache = verified_cache
+                        st.success(
+                            "🟢 Enriquecimento concluído e confirmado no "
+                            "GitHub. Nenhuma nova chamada será feita se "
+                            "esta partida for aberta novamente."
+                        )
+
+                        st.info(
+                            f"Fixture {selected_fixture_id}: registro em "
+                            "`details` confirmado no cache persistente."
+                        )
 
             else:
 
@@ -2352,8 +2388,6 @@ if fixtures:
                     "O resultado já estava no cache. "
                     "Nenhuma chamada à API-Sports foi feita."
                 )
-
-                st.rerun()
 
 # ============================================================
 # DIAGNÓSTICO
