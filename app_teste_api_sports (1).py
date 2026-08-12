@@ -26,6 +26,83 @@ GITHUB_FILE = "dados_app/cache.json"
 
 
 # ============================================================
+# CAMPEONATOS PRÉ-SELECIONADOS
+# ============================================================
+# Somente estes campeonatos ficam disponíveis na seleção de
+# partidas. O filtro é aplicado localmente, sem gerar chamadas
+# adicionais à API-Sports.
+#
+# Os nomes abaixo contemplam as competições já definidas no app
+# e acrescentam Argentina e México.
+ALLOWED_LEAGUES = {
+    "Brasileirão Série A",
+    "Brasileirão Série B",
+    "Copa do Brasil",
+    "Copa Libertadores",
+    "Copa Sul-Americana",
+    "UEFA Champions League",
+    "UEFA Europa League",
+    "UEFA Conference League",
+    "Premier League",
+    "Championship",
+    "La Liga",
+    "Bundesliga",
+    "Ligue 1",
+    "Serie A",
+    "Eredivisie",
+    "Primeira Liga",
+    "Copa América",
+    "Copa do Mundo",
+    "Liga Profesional Argentina",
+    "Liga MX",
+}
+
+# Alguns retornos da API-Sports usam o nome oficial da competição.
+# Estes aliases fazem o filtro aceitar essas variações sem abrir
+# competições fora da lista pré-acertada.
+ALLOWED_LEAGUE_ALIASES = {
+    "CONMEBOL Libertadores": "Copa Libertadores",
+    "CONMEBOL Sudamericana": "Copa Sul-Americana",
+    "Primera División": "Liga Profesional Argentina",
+    "Primera Nacional": "Liga Profesional Argentina",
+    "Liga Profesional de Fútbol": "Liga Profesional Argentina",
+    "Primera Division": "Liga Profesional Argentina",
+    "Liga MX": "Liga MX",
+    "Liga BBVA MX": "Liga MX",
+    "World Cup": "Copa do Mundo",
+    "Copa America": "Copa América",
+}
+
+def league_is_allowed(league_name):
+    """Retorna True somente para campeonatos previamente autorizados."""
+    if not league_name:
+        return False
+
+    name = str(league_name).strip()
+
+    if name in ALLOWED_LEAGUES:
+        return True
+
+    return name in ALLOWED_LEAGUE_ALIASES
+
+
+def filter_allowed_fixtures(fixtures):
+    """
+    Remove localmente partidas de campeonatos não autorizados.
+
+    Não faz nenhuma chamada à API-Sports. O cache continua podendo
+    armazenar a resposta original; o filtro é aplicado na interface.
+    """
+    return [
+        item
+        for item in (fixtures or [])
+        if league_is_allowed(
+            item.get("league", {}).get("name")
+        )
+    ]
+
+
+# ============================================================
 # SECRETS
 # ============================================================
 
@@ -1402,6 +1479,11 @@ st.subheader(
     "1️⃣ Buscar partidas"
 )
 
+st.caption(
+    "🎯 Filtro ativo: somente campeonatos pré-acertados "
+    "(incluindo Argentina e México)."
+)
+
 selected_date = st.date_input(
     "Data",
     value=date.today(),
@@ -1456,21 +1538,50 @@ if st.button(
         if api_was_called:
 
             st.success(
-                f"Retornaram {len(fixtures)} partidas. "
+                f"Encontradas {len(fixtures)} partidas nos "
+                "campeonatos pré-selecionados. "
                 "Esta operação consultou a API-Sports."
             )
 
         else:
 
             st.info(
-                f"Retornaram {len(fixtures)} partidas "
-                "a partir do CACHE — nenhuma chamada "
-                "à API-Sports foi feita."
+                f"Encontradas {len(fixtures)} partidas nos "
+                "campeonatos pré-selecionados a partir do CACHE — "
+                "nenhuma chamada à API-Sports foi feita."
             )
+
+        total_before_filter = st.session_state.get(
+            "fixtures_total_found",
+            len(fixtures),
+        )
+        allowed_after_filter = st.session_state.get(
+            "fixtures_allowed_found",
+            len(fixtures),
+        )
+
+        if total_before_filter != allowed_after_filter:
+            st.caption(
+                f"{total_before_filter - allowed_after_filter} "
+                "partida(s) de outros campeonatos foram ocultadas "
+                "pelo filtro pré-acertado."
+            )
+
+        # Filtra localmente para mostrar somente os campeonatos
+        # previamente definidos. Isso não consome a API-Sports.
+        allowed_fixtures = filter_allowed_fixtures(fixtures)
 
         st.session_state[
             "fixtures"
-        ] = fixtures
+        ] = allowed_fixtures
+
+        st.session_state[
+            "fixtures_total_found"
+        ] = len(fixtures)
+
+        st.session_state[
+            "fixtures_allowed_found"
+        ] = len(allowed_fixtures)
 
         st.session_state[
             "selected_date"
@@ -1830,6 +1941,13 @@ if fixtures:
 with st.expander(
     "🔎 Diagnóstico"
 ):
+
+    st.write(
+        "Campeonatos liberados no filtro:"
+    )
+    st.write(
+        ", ".join(sorted(ALLOWED_LEAGUES))
+    )
 
     st.write(
         "O objetivo deste teste é separar três coisas:"
