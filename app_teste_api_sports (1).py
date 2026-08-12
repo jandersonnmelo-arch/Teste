@@ -12,7 +12,7 @@ import streamlit as st
 # ============================================================
 
 st.set_page_config(
-    page_title="Teste limpo — API-SPORTS",
+    page_title="Teste limpo — API-SPORTS v13",
     page_icon="🟣",
     layout="wide",
 )
@@ -501,6 +501,63 @@ def github_file_url():
 # GITHUB — LEITURA
 # ============================================================
 
+def github_cache_diagnostic(cache, sha, error):
+    """
+    Produz um diagnóstico local da persistência sem fazer nenhuma
+    chamada adicional ao GitHub ou à API-Sports.
+    """
+    details = (
+        (cache or {}).get("details", {})
+        if isinstance(cache, dict)
+        else {}
+    )
+    fixtures = (
+        (cache or {}).get("fixtures", {})
+        if isinstance(cache, dict)
+        else {}
+    )
+    quota = (
+        (cache or {}).get("quota", {})
+        if isinstance(cache, dict)
+        else {}
+    )
+
+    fixture_1607648 = details.get("1607648")
+    return {
+        "owner": GITHUB_OWNER,
+        "repo": GITHUB_REPO,
+        "branch": GITHUB_BRANCH,
+        "file": GITHUB_FILE,
+        "cache_loaded": isinstance(cache, dict),
+        "sha": sha,
+        "error": error,
+        "api_calls_internal": (
+            (cache or {}).get("api_calls")
+            if isinstance(cache, dict)
+            else None
+        ),
+        "daily_used": quota.get("daily_used"),
+        "daily_remaining": quota.get("daily_remaining"),
+        "daily_limit": quota.get("daily_limit"),
+        "dates": len(
+            (cache or {}).get("date_searches", {})
+            if isinstance(cache, dict)
+            else {}
+        ),
+        "fixtures": len(fixtures),
+        "details": len(details),
+        "fixture_1607648": (
+            "ENCONTRADO" if fixture_1607648 is not None
+            else "NÃO ENCONTRADO"
+        ),
+        "fixture_1607648_empty": (
+            fixture_1607648.get("empty")
+            if isinstance(fixture_1607648, dict)
+            else None
+        ),
+    }
+
+
 def github_load_cache():
     """
     Lê o cache persistente do GitHub.
@@ -531,12 +588,20 @@ def github_load_cache():
             timeout=20,
         )
 
-        # Arquivo ainda não existe.
+        # 404 é tratado como erro explícito.
+        # Em repositórios privados, GitHub pode devolver 404 quando
+        # o token não possui acesso ao repositório/arquivo. Portanto,
+        # nunca podemos interpretar 404 como "cache vazio".
         if response.status_code == 404:
             return (
-                empty_cache(),
                 None,
                 None,
+                (
+                    "GitHub GET 404: cache.json não foi encontrado "
+                    "ou o GITHUB_TOKEN não tem acesso ao repositório. "
+                    f"URL: {github_file_url()} | branch: {GITHUB_BRANCH} | "
+                    f"arquivo: {GITHUB_FILE}"
+                ),
             )
 
         if not response.ok:
@@ -558,9 +623,9 @@ def github_load_cache():
 
         if not encoded:
             return (
-                empty_cache(),
-                obj.get("sha"),
                 None,
+                obj.get("sha"),
+                "GitHub retornou o arquivo sem conteúdo/base64.",
             )
 
         content = base64.b64decode(
@@ -1554,6 +1619,12 @@ cache, cache_sha, cache_error = (
     github_load_cache()
 )
 
+github_diag = github_cache_diagnostic(
+    cache,
+    cache_sha,
+    cache_error,
+)
+
 if cache_error:
 
     st.error(
@@ -1596,12 +1667,12 @@ if "historical_fixture_id" not in st.session_state:
 # ============================================================
 
 st.title(
-    "🟣 Teste limpo — API-SPORTS"
+    "🟣 Teste limpo — API-SPORTS v13"
 )
 
 st.caption(
-    "Protótipo independente para diagnosticar "
-    "descoberta, enriquecimento e persistência."
+    "Protótipo independente para diagnosticar descoberta, "
+    "enriquecimento, persistência e leitura do GitHub."
 )
 
 st.info(
@@ -1797,6 +1868,97 @@ with st.expander("ℹ️ Estado do cache", expanded=False):
         "Se o registro sumiu, o aplicativo tenta primeiro "
         "recuperá-lo do histórico do GitHub antes de oferecer "
         "uma nova chamada à API-Sports."
+    )
+
+
+# ============================================================
+# DIAGNÓSTICO VISÍVEL DA PERSISTÊNCIA
+# ============================================================
+
+with st.expander(
+    "🔗 Diagnóstico GitHub / cache",
+    expanded=True,
+):
+    st.caption(
+        "Leitura do cache persistente, sem fazer chamada extra "
+        "à API-Sports."
+    )
+
+    d1, d2, d3 = st.columns(3)
+
+    with d1:
+        st.metric(
+            "Cache carregado",
+            "✅ SIM" if github_diag["cache_loaded"] else "❌ NÃO",
+        )
+
+    with d2:
+        st.metric(
+            "Details",
+            github_diag["details"]
+            if github_diag["details"] is not None
+            else "—",
+        )
+
+    with d3:
+        st.metric(
+            "Fixture 1607648",
+            github_diag["fixture_1607648"],
+        )
+
+    st.write(
+        f"**Repositório:** `{github_diag['owner']}/{github_diag['repo']}`"
+    )
+    st.write(
+        f"**Branch:** `{github_diag['branch']}`"
+    )
+    st.write(
+        f"**Arquivo:** `{github_diag['file']}`"
+    )
+
+    if github_diag["sha"]:
+        st.caption(
+            f"SHA do arquivo carregado: `{github_diag['sha']}`"
+        )
+
+    if github_diag["cache_loaded"]:
+        st.success(
+            "O aplicativo carregou um cache válido do GitHub."
+        )
+        st.write(
+            f"**Chamadas internas registradas:** "
+            f"{github_diag['api_calls_internal']}"
+        )
+        st.write(
+            f"**Consumo real persistido:** "
+            f"{github_diag['daily_used']} / "
+            f"{github_diag['daily_limit']} "
+            f"(restantes: {github_diag['daily_remaining']})"
+        )
+        st.write(
+            f"**Datas:** {github_diag['dates']}  •  "
+            f"**Fixtures indexados:** {github_diag['fixtures']}  •  "
+            f"**Enriquecimentos:** {github_diag['details']}"
+        )
+
+        if github_diag["fixture_1607648"] == "ENCONTRADO":
+            st.success(
+                "Fixture 1607648 encontrado no `details` do cache. "
+                "O app deve reconhecer essa partida como já enriquecida."
+            )
+        else:
+            st.info(
+                "Fixture 1607648 não está no `details` do cache carregado."
+            )
+    else:
+        st.error(
+            "O aplicativo não conseguiu carregar um cache válido. "
+            "Nenhuma gravação deve ser feita enquanto esse erro existir."
+        )
+
+    st.info(
+        "Proteção ativa: HTTP 404 do GitHub não é mais interpretado "
+        "como cache vazio."
     )
 
 
@@ -2394,7 +2556,7 @@ if fixtures:
 # ============================================================
 
 with st.expander(
-    "🔎 Diagnóstico"
+    "🔎 Diagnóstico técnico"
 ):
 
     st.write(
