@@ -12,7 +12,7 @@ import streamlit as st
 # ============================================================
 
 st.set_page_config(
-    page_title="Teste limpo — API-SPORTS v14",
+    page_title="Teste limpo — API-SPORTS v15",
     page_icon="🟣",
     layout="wide",
 )
@@ -1718,12 +1718,13 @@ if "historical_fixture_id" not in st.session_state:
 # ============================================================
 
 st.title(
-    "🟣 Teste limpo — API-SPORTS v14"
+    "🟣 Teste limpo — API-SPORTS v15"
 )
 
 st.caption(
     "Protótipo independente para diagnosticar descoberta, "
-    "enriquecimento, persistência e leitura do GitHub."
+    "enriquecimento, persistência, leitura do GitHub e atualização "
+    "imediata da interface."
 )
 
 st.info(
@@ -2273,14 +2274,33 @@ if fixtures:
         for item in options
     ]
 
+    # Mantém a partida que acabou de ser enriquecida selecionada
+    # após o rerun automático.
+    saved_selected_fixture = st.session_state.get(
+        "selected_fixture_id"
+    )
+
+    default_index = 0
+
+    if saved_selected_fixture is not None:
+        for idx, (_, fixture_id) in enumerate(options):
+            if fixture_id == saved_selected_fixture:
+                default_index = idx
+                break
+
     selected_label = st.selectbox(
         "Escolha o jogo para analisar",
         labels,
+        index=default_index,
     )
 
     selected_fixture_id = dict(
         options
     )[selected_label]
+
+    st.session_state["selected_fixture_id"] = (
+        selected_fixture_id
+    )
 
     # Exibe a partida selecionada de forma limpa.
     selected_item = next(
@@ -2581,19 +2601,33 @@ if fixtures:
                             "Nenhum rerun será feito para não esconder o erro."
                         )
                     else:
-                        # Mantém a tela atual coerente com o que realmente
-                        # está persistido no GitHub.
+                        # O GitHub confirmou a gravação. Neste ponto o
+                        # cache local já contém o novo detail e o contador
+                        # de quota foi atualizado pela resposta real da
+                        # API-Sports. Porém, os elementos exibidos no topo
+                        # da página foram calculados antes do clique.
+                        #
+                        # Portanto, fazemos um rerun SOMENTE depois da
+                        # confirmação positiva. Assim a tela inteira passa
+                        # imediatamente a mostrar:
+                        #   - consumo 65/35 (ou o valor real retornado);
+                        #   - partida já enriquecida;
+                        #   - nenhuma nova chamada ao abrir novamente.
                         cache = verified_cache
-                        st.success(
-                            "🟢 Enriquecimento concluído e confirmado no "
-                            "GitHub. Nenhuma nova chamada será feita se "
-                            "esta partida for aberta novamente."
+                        st.session_state["selected_fixture_id"] = (
+                            selected_fixture_id
+                        )
+                        st.session_state["enrichment_confirmed"] = (
+                            selected_fixture_id
                         )
 
-                        st.info(
-                            f"Fixture {selected_fixture_id}: registro em "
-                            "`details` confirmado no cache persistente."
+                        st.success(
+                            "🟢 Enriquecimento concluído e confirmado no "
+                            "GitHub. Atualizando a tela para refletir "
+                            "imediatamente o novo estado..."
                         )
+
+                        st.rerun()
 
             else:
 
