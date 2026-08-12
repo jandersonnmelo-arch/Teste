@@ -53,6 +53,14 @@ def empty_cache():
         "version": 2,
         "api_calls": 0,
         "last_api_call": None,
+        "quota": {
+            "daily_used": None,
+            "daily_limit": None,
+            "daily_remaining": None,
+            "minute_limit": None,
+            "minute_remaining": None,
+            "updated_at": None,
+        },
         "date_searches": {},
         "fixtures": {},
         "details": {},
@@ -87,6 +95,18 @@ def normalize_cache(data):
     cache["last_api_call"] = data.get(
         "last_api_call"
     )
+
+    if isinstance(data.get("quota"), dict):
+        quota = data["quota"]
+        for key in (
+            "daily_used",
+            "daily_limit",
+            "daily_remaining",
+            "minute_limit",
+            "minute_remaining",
+            "updated_at",
+        ):
+            cache["quota"][key] = quota.get(key)
 
     if isinstance(
         data.get("date_searches"),
@@ -186,6 +206,7 @@ def github_load_cache():
                     f"{response.text[:500]}"
                 ),
             )
+
         obj = response.json()
 
         encoded = obj.get(
@@ -248,6 +269,7 @@ def github_load_cache_at_commit(commit_sha):
 
         if response.status_code == 404:
             return None, None, None
+
         if not response.ok:
             return (
                 None,
@@ -352,6 +374,7 @@ def restore_historical_detail(cache, fixture_id, historical):
     Não chama API-Sports.
     """
     key = str(fixture_id)
+
     if not historical or not historical.get("detail"):
         return False
 
@@ -393,6 +416,7 @@ def merge_caches(remote, local):
     local = normalize_cache(local)
 
     merged = normalize_cache(remote)
+
     # --------------------------------------------------------
     # Contador de chamadas
     # --------------------------------------------------------
@@ -401,6 +425,28 @@ def merge_caches(remote, local):
         int(remote.get("api_calls", 0)),
         int(local.get("api_calls", 0)),
     )
+
+    # --------------------------------------------------------
+    # QUOTA REAL DA API
+    # --------------------------------------------------------
+
+    remote_quota = remote.get("quota", {})
+    local_quota = local.get("quota", {})
+
+    merged_quota = dict(remote_quota)
+
+    # O snapshot local de quota vem da resposta mais recente
+    # da API-Sports. Se existir, ele é mais novo que o remoto
+    # somente quando possui updated_at mais recente.
+    remote_updated = remote_quota.get("updated_at")
+    local_updated = local_quota.get("updated_at")
+
+    if local_updated and (
+        not remote_updated or local_updated >= remote_updated
+    ):
+        merged_quota.update(local_quota)
+
+    merged["quota"] = merged_quota
 
     # --------------------------------------------------------
     # Última chamada
@@ -413,6 +459,7 @@ def merge_caches(remote, local):
     local_last = local.get(
         "last_api_call"
     )
+
     if remote_last and local_last:
         if local_last > remote_last:
             merged["last_api_call"] = local_last
@@ -433,6 +480,7 @@ def merge_caches(remote, local):
         "date_searches",
         {},
     )
+
     local_dates = local.get(
         "date_searches",
         {},
@@ -453,6 +501,7 @@ def merge_caches(remote, local):
             and value
         ):
             merged_dates[key] = value
+
     merged["date_searches"] = merged_dates
 
     # --------------------------------------------------------
@@ -494,6 +543,7 @@ def merge_caches(remote, local):
         "details",
         {},
     )
+
     local_details = local.get(
         "details",
         {},
@@ -514,6 +564,7 @@ def merge_caches(remote, local):
         # por None ou estrutura vazia.
         if value is None:
             continue
+
         if not merged_details[key]:
             merged_details[key] = value
 
@@ -576,6 +627,7 @@ def github_save_cache(cache):
             ensure_ascii=False,
             indent=2,
         )
+
         encoded = base64.b64encode(
             content.encode("utf-8")
         ).decode("ascii")
@@ -666,10 +718,79 @@ def github_save_cache(cache):
 # API-SPORTS
 # ============================================================
 
-def api_get(endpoint, params):
+def parse_int_header(value):
+    """
+    Converte headers de rate limit em inteiro sem quebrar
+    se o provedor devolver valor ausente ou inesperado.
+    """
+    if value is None:
+        return None
+
+    try:
+        return int(str(value).split(",")[0].strip())
+    except (TypeError, ValueError):
+        return None
+
+
+def update_real_quota_from_response(cache, response):
+    """
+    Guarda no cache os headers reais devolvidos pela API-Sports.
+
+    Esses valores são os mais confiáveis para o consumo real:
+      - x-ratelimit-requests-limit: limite diário
+      - x-ratelimit-requests-remaining: restante diário
+      - X-RateLimit-Limit: limite por minuto
+      - X-RateLimit-Remaining: restante por minuto
+    """
+    daily_limit = parse_int_header(
+        response.headers.get("x-ratelimit-requests-limit")
+    )
+    daily_remaining = parse_int_header(
+        response.headers.get("x-ratelimit-requests-remaining")
+    )
+    minute_limit = parse_int_header(
+        response.headers.get("X-RateLimit-Limit")
+        or response.headers.get("x-ratelimit-limit")
+    )
+    minute_remaining = parse_int_header(
+        response.headers.get("X-RateLimit-Remaining")
+        or response.headers.get("x-ratelimit-remaining")
+    )
+
+    quota = cache.setdefault("quota", {})
+
+    if daily_limit is not None:
+        quota["daily_limit"] = daily_limit
+
+    if daily_remaining is not None:
+        quota["daily_remaining"] = daily_remaining
+
+    if daily_limit is not None and daily_remaining is not None:
+        quota["daily_used"] = max(
+            0,
+            daily_limit - daily_remaining,
+        )
+
+    if minute_limit is not None:
+        quota["minute_limit"] = minute_limit
+
+    if minute_remaining is not None:
+        quota["minute_remaining"] = minute_remaining
+
+    quota["updated_at"] = (
+        datetime.now(timezone.utc)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+
+
+def api_get(endpoint, params, cache=None):
     """
     ÚNICO ponto do aplicativo que pode chamar
     a API-Sports.
+
+    Além do payload, captura os headers reais de
+    rate limit devolvidos pela API.
     """
 
     if not API_KEY:
@@ -691,6 +812,12 @@ def api_get(endpoint, params):
             timeout=30,
         )
 
+        if cache is not None:
+            update_real_quota_from_response(
+                cache,
+                response,
+            )
+
         try:
             payload = response.json()
 
@@ -701,8 +828,75 @@ def api_get(endpoint, params):
                     "text": response.text[:500],
                 }
             }
+
         if not response.ok:
             return None, payload
+
+        return payload, None
+
+    except Exception as e:
+        return None, str(e)
+
+
+def api_status(cache):
+    """
+    Consulta o endpoint /status.
+
+    Segundo a documentação oficial da API-FOOTBALL,
+    esta chamada não consome a cota diária.
+    Ela informa o uso atual e o limite diário da conta.
+    """
+    if not API_KEY:
+        return None, "API-Sports key não configurada."
+
+    try:
+        response = requests.get(
+            f"{BASE_API}/status",
+            headers={
+                "x-apisports-key": API_KEY
+            },
+            timeout=20,
+        )
+
+        try:
+            payload = response.json()
+        except Exception:
+            payload = {}
+
+        if not response.ok:
+            return None, payload
+
+        account = (
+            payload
+            .get("response", {})
+            .get("requests", {})
+        )
+
+        current = account.get("current")
+        limit_day = account.get("limit_day")
+
+        quota = cache.setdefault("quota", {})
+
+        if current is not None:
+            quota["daily_used"] = int(current)
+
+        if limit_day is not None:
+            quota["daily_limit"] = int(limit_day)
+
+        if (
+            quota.get("daily_limit") is not None
+            and quota.get("daily_used") is not None
+        ):
+            quota["daily_remaining"] = max(
+                0,
+                quota["daily_limit"] - quota["daily_used"],
+            )
+
+        quota["updated_at"] = (
+            datetime.now(timezone.utc)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
 
         return payload, None
 
@@ -742,6 +936,7 @@ def search_fixtures(
 ):
     """
     Procura primeiro no cache persistente.
+
     Se a data existir:
         NÃO chama API-Sports.
 
@@ -770,6 +965,7 @@ def search_fixtures(
         {
             "date": key
         },
+        cache=cache,
     )
 
     if error:
@@ -783,6 +979,7 @@ def search_fixtures(
         "response",
         [],
     )
+
     register_api_call(cache)
 
     cache.setdefault(
@@ -873,6 +1070,7 @@ def enrich_fixture(
         {
             "id": fixture_id
         },
+        cache=cache,
     )
 
     if error:
@@ -950,6 +1148,7 @@ if not API_KEY:
     )
     st.stop()
 
+
 if not GITHUB_TOKEN:
     st.warning(
         "O Secret GITHUB_TOKEN ainda não está configurado. "
@@ -971,6 +1170,36 @@ if cache_error:
 
     st.stop()
 
+
+# Atualiza o consumo diário real sem gastar a cota diária.
+# O endpoint /status é específico para consultar o estado da conta.
+if "quota_status_loaded" not in st.session_state:
+    st.session_state["quota_status_loaded"] = False
+
+if not st.session_state["quota_status_loaded"]:
+    _, quota_status_error = api_status(cache)
+    st.session_state["quota_status_loaded"] = True
+
+    # Persiste apenas o snapshot de quota se ele trouxe dados.
+    # Não registra isso como chamada da API-Sports.
+    if not quota_status_error:
+        github_save_cache(cache)
+
+
+# ============================================================
+# ESTADO DA INTERFACE
+# ============================================================
+
+# O Streamlit reexecuta o script a cada clique. O resultado da
+# busca histórica precisa sobreviver ao rerun do clique em
+# "Restaurar".
+if "historical_detail" not in st.session_state:
+    st.session_state["historical_detail"] = None
+
+if "historical_fixture_id" not in st.session_state:
+    st.session_state["historical_fixture_id"] = None
+
+
 # ============================================================
 # INTERFACE
 # ============================================================
@@ -984,6 +1213,106 @@ st.caption(
     "descoberta, enriquecimento e persistência."
 )
 
+
+# ============================================================
+# CONTROLE DE CONSUMO REAL
+# ============================================================
+
+st.subheader(
+    "🟢 Consumo real da API-Sports"
+)
+
+quota = cache.get("quota", {})
+
+daily_used = quota.get("daily_used")
+daily_remaining = quota.get("daily_remaining")
+daily_limit = quota.get("daily_limit")
+
+minute_remaining = quota.get("minute_remaining")
+minute_limit = quota.get("minute_limit")
+
+q1, q2, q3 = st.columns(3)
+
+with q1:
+    st.metric(
+        "Chamadas hoje",
+        daily_used if daily_used is not None else "—",
+    )
+
+with q2:
+    st.metric(
+        "Restantes hoje",
+        daily_remaining if daily_remaining is not None else "—",
+    )
+
+with q3:
+    st.metric(
+        "Limite diário",
+        daily_limit if daily_limit is not None else "—",
+    )
+
+if (
+    daily_used is not None
+    and daily_limit
+    and daily_limit > 0
+):
+    usage = min(
+        1.0,
+        max(
+            0.0,
+            daily_used / daily_limit,
+        ),
+    )
+    st.progress(
+        usage,
+        text=f"Uso diário real: {usage * 100:.1f}%",
+    )
+
+if (
+    minute_remaining is not None
+    and minute_limit is not None
+):
+    st.caption(
+        "Limite por minuto: "
+        f"{minute_remaining} de {minute_limit} "
+        "chamadas restantes."
+    )
+else:
+    st.caption(
+        "Limite por minuto: ainda será atualizado "
+        "na próxima chamada real à API-Sports."
+    )
+
+if quota.get("updated_at"):
+    st.caption(
+        "Consumo real atualizado em: "
+        f"{quota['updated_at']}"
+    )
+
+if st.button(
+    "🔄 Atualizar consumo real",
+    help="Consulta /status da API-Sports. A documentação informa que /status não consome a cota diária.",
+):
+    with st.spinner("Atualizando consumo real..."):
+        _, status_error = api_status(cache)
+
+    if status_error:
+        st.error(
+            f"Não foi possível atualizar o consumo: {status_error}"
+        )
+    else:
+        ok, save_error = github_save_cache(cache)
+
+        if not ok:
+            st.warning(
+                "O consumo foi consultado, mas o snapshot não pôde "
+                f"ser salvo no GitHub: {save_error}"
+            )
+        else:
+            st.session_state["quota_status_loaded"] = True
+            st.rerun()
+
+st.divider()
 
 # ============================================================
 # CONTROLE INTERNO
@@ -1032,9 +1361,15 @@ with c3:
     )
 
 with st.expander("ℹ️ Estado do cache", expanded=False):
+
     st.write(
-        "As métricas acima são lidas diretamente do "
+        "As métricas internas são lidas diretamente do "
         "cache persistente carregado do GitHub."
+    )
+
+    st.write(
+        "O consumo real diário e por minuto vem dos "
+        "limites informados pela própria API-Sports."
     )
 
     st.write(
@@ -1052,6 +1387,7 @@ with st.expander("ℹ️ Estado do cache", expanded=False):
 if cache.get(
     "last_api_call"
 ):
+
     st.caption(
         "Última chamada registrada pelo app: "
         f"{cache['last_api_call']}"
@@ -1093,6 +1429,7 @@ if st.button(
     with st.spinner(
         "Consultando cache/API..."
     ):
+
         (
             fixtures,
             api_was_called,
@@ -1113,6 +1450,7 @@ if st.button(
         st.error(
             "Não foi possível obter as partidas."
         )
+
     else:
 
         if api_was_called:
@@ -1133,9 +1471,13 @@ if st.button(
         st.session_state[
             "fixtures"
         ] = fixtures
+
         st.session_state[
             "selected_date"
         ] = selected_date.isoformat()
+
+        st.session_state["historical_detail"] = None
+        st.session_state["historical_fixture_id"] = None
 
 
 # ============================================================
@@ -1153,6 +1495,7 @@ if fixtures:
     st.subheader(
         "2️⃣ Selecionar partida"
     )
+
     options = []
 
     for item in fixtures:
@@ -1236,6 +1579,7 @@ if fixtures:
         "Fixture identificado: "
         f"{selected_fixture_id}"
     )
+
     # --------------------------------------------------------
     # IMPORTANTE:
     # RECARREGA O CACHE PARA SABER SE O DETALHE JÁ EXISTE
@@ -1297,18 +1641,17 @@ if fixtures:
         # ----------------------------------------------------
         # RECUPERAÇÃO DO HISTÓRICO
         # ----------------------------------------------------
-        # Antes de gastar qualquer chamada da API-Sports,
-        # permite procurar uma versão anterior do cache no
-        # histórico do GitHub.
+        # NÃO aninhar o botão "Restaurar" dentro do botão "Procurar".
+        # Em Streamlit, o clique em "Restaurar" causa um rerun e o
+        # botão pai deixa de estar pressionado. O resultado histórico
+        # fica no session_state para sobreviver a esse rerun.
         if st.button(
             "♻️ Procurar enriquecimento anterior no GitHub",
             type="secondary",
         ):
-
             with st.spinner(
                 "Procurando versões anteriores do cache..."
             ):
-
                 historical, history_error = (
                     github_find_historical_detail(
                         selected_fixture_id
@@ -1316,51 +1659,88 @@ if fixtures:
                 )
 
             if history_error:
-
+                st.session_state["historical_detail"] = None
+                st.session_state["historical_fixture_id"] = None
                 st.error(history_error)
-
             elif historical:
-
-                commit_date = historical.get("date") or "data desconhecida"
-
-                st.success(
-                    "🟢 Enriquecimento encontrado no histórico "
-                    f"do GitHub ({commit_date})."
-                )
-
-                if st.button(
-                    "✅ Restaurar esse enriquecimento",
-                    type="primary",
-                ):
-
-                    with st.spinner(
-                        "Restaurando sem chamar a API-Sports..."
-                    ):
-
-                        restored = restore_historical_detail(
-                            cache,
-                            selected_fixture_id,
-                            historical,
-                        )
-
-                    if restored is True:
-                        st.success(
-                            "Enriquecimento restaurado. "
-                            "Nenhuma chamada à API-Sports foi feita."
-                        )
-                        st.rerun()
-
-                    elif isinstance(restored, tuple) and not restored[0]:
-                        st.error(
-                            f"Não foi possível restaurar: {restored[1]}"
-                        )
-
+                st.session_state["historical_detail"] = historical
+                st.session_state["historical_fixture_id"] = selected_fixture_id
             else:
-
+                st.session_state["historical_detail"] = None
+                st.session_state["historical_fixture_id"] = selected_fixture_id
                 st.info(
                     "Não encontrei um enriquecimento dessa partida "
                     "nas últimas versões do cache.json no GitHub."
                 )
+
+        historical = st.session_state.get("historical_detail")
+        historical_fixture_id = st.session_state.get(
+            "historical_fixture_id"
+        )
+
+        if (
+            historical
+            and historical_fixture_id == selected_fixture_id
+        ):
+            commit_date = historical.get("date") or "data desconhecida"
+
+            st.success(
+                "🟢 Enriquecimento encontrado no histórico "
+                f"do GitHub ({commit_date})."
+            )
+
+            if st.button(
+                "✅ Restaurar esse enriquecimento",
+                type="primary",
+            ):
+                with st.spinner(
+                    "Restaurando sem chamar a API-Sports..."
+                ):
+                    restored = restore_historical_detail(
+                        cache,
+                        selected_fixture_id,
+                        historical,
+                    )
+
+                if restored is True:
+                    # Confirma no GitHub antes de recarregar a interface.
+                    verified_cache, _, verify_error = github_load_cache()
+
+                    if verify_error:
+                        st.error(
+                            "A gravação foi enviada, mas não foi possível "
+                            f"confirmar o cache no GitHub: {verify_error}"
+                        )
+                    elif (
+                        verified_cache
+                        .get("details", {})
+                        .get(str(selected_fixture_id))
+                        is not None
+                    ):
+                        st.session_state["historical_detail"] = None
+                        st.session_state["historical_fixture_id"] = None
+                        st.success(
+                            "✅ Enriquecimento restaurado e confirmado no "
+                            "cache do GitHub. Nenhuma chamada à API-Sports "
+                            "foi feita."
+                        )
+                        st.rerun()
+                    else:
+                        st.error(
+                            "A gravação retornou sucesso, mas o registro "
+                            "não apareceu no cache do GitHub após a leitura "
+                            "de confirmação. Nenhuma nova chamada à API-Sports "
+                            "foi feita."
+                        )
+                elif isinstance(restored, tuple) and not restored[0]:
+                    st.error(
+                        f"Não foi possível restaurar: {restored[1]}"
+                    )
+                else:
+                    st.error(
+                        "Não foi possível restaurar o enriquecimento histórico."
+                    )
+
         if st.button(
             "🟣 Enriquecer somente esta partida",
             type="primary",
@@ -1402,6 +1782,7 @@ if fixtures:
                     "no cache persistente. "
                     "Nenhuma chamada à API-Sports foi feita."
                 )
+
                 st.rerun()
 
             with st.spinner(
@@ -1422,6 +1803,7 @@ if fixtures:
                 st.error(
                     str(error)
                 )
+
             elif api_was_called:
 
                 st.success(
@@ -1466,13 +1848,19 @@ with st.expander(
     )
 
     st.write(
-        "O contador registra somente chamadas "
+        "O contador interno registra somente chamadas "
         "à API-Sports feitas pelo próprio app."
     )
 
     st.write(
-        "O consumo total da conta API-Sports "
-        "é controlado separadamente pela própria API."
+        "O bloco de consumo real usa os headers de rate limit "
+        "da API-Sports e o endpoint `/status` para mostrar "
+        "o uso diário real da conta."
+    )
+
+    st.write(
+        "A API-Sports informa separadamente o limite diário "
+        "e o limite por minuto."
     )
 
     st.write(
@@ -1484,6 +1872,7 @@ with st.expander(
         "O aplicativo nunca deve substituir um cache "
         "existente por um cache vazio devido a erro de leitura."
     )
+
     st.write(
         "Antes de cada gravação, o aplicativo relê "
         "o cache atual do GitHub e mescla os dados."
