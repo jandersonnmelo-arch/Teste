@@ -102,7 +102,6 @@ def league_is_allowed(league):
     """Retorna True somente para campeonatos previamente autorizados."""
     if not isinstance(league, dict):
         return False
-
     league_id = league.get("id")
     if league_id is not None:
         try:
@@ -207,7 +206,6 @@ def normalize_cache(data):
         cache["fixtures"] = data[
             "fixtures"
         ]
-
     if isinstance(
         data.get("details"),
         dict,
@@ -249,7 +247,6 @@ def github_load_cache():
 
     Retorno:
         cache, sha, erro
-
     IMPORTANTE:
     se houver erro de leitura, NÃO retorna um cache vazio
     para posterior gravação. Isso evita apagar dados.
@@ -312,7 +309,6 @@ def github_load_cache():
         data = json.loads(content)
 
         cache = normalize_cache(data)
-
         return (
             cache,
             obj.get("sha"),
@@ -333,7 +329,6 @@ def github_commits_url():
         f"https://api.github.com/repos/"
         f"{GITHUB_OWNER}/{GITHUB_REPO}/commits"
     )
-
 
 def github_load_cache_at_commit(commit_sha):
     """
@@ -543,7 +538,6 @@ def merge_caches(remote, local):
     local_last = local.get(
         "last_api_call"
     )
-
     if remote_last and local_last:
         if local_last > remote_last:
             merged["last_api_call"] = local_last
@@ -564,7 +558,6 @@ def merge_caches(remote, local):
         "date_searches",
         {},
     )
-
     local_dates = local.get(
         "date_searches",
         {},
@@ -585,7 +578,6 @@ def merge_caches(remote, local):
             and value
         ):
             merged_dates[key] = value
-
     merged["date_searches"] = merged_dates
 
     # --------------------------------------------------------
@@ -627,7 +619,6 @@ def merge_caches(remote, local):
         "details",
         {},
     )
-
     local_details = local.get(
         "details",
         {},
@@ -648,7 +639,6 @@ def merge_caches(remote, local):
         # por None ou estrutura vazia.
         if value is None:
             continue
-
         if not merged_details[key]:
             merged_details[key] = value
 
@@ -711,7 +701,6 @@ def github_save_cache(cache):
             ensure_ascii=False,
             indent=2,
         )
-
         encoded = base64.b64encode(
             content.encode("utf-8")
         ).decode("ascii")
@@ -921,7 +910,6 @@ def api_get(endpoint, params, cache=None):
     except Exception as e:
         return None, str(e)
 
-
 def api_status(cache):
     """
     Consulta o endpoint /status.
@@ -963,7 +951,6 @@ def api_status(cache):
 
         if current is not None:
             quota["daily_used"] = int(current)
-
         if limit_day is not None:
             quota["daily_limit"] = int(limit_day)
 
@@ -1467,7 +1454,6 @@ with st.expander("ℹ️ Estado do cache", expanded=False):
         "uma nova chamada à API-Sports."
     )
 
-
 if cache.get(
     "last_api_call"
 ):
@@ -1509,7 +1495,6 @@ if st.button(
     cache, cache_sha, cache_error = (
         github_load_cache()
     )
-
     if cache_error:
 
         st.error(cache_error)
@@ -1551,7 +1536,6 @@ if st.button(
             )
 
         else:
-
             st.info(
                 f"Encontradas {len(fixtures)} partidas nos "
                 "campeonatos pré-selecionados a partir do CACHE — "
@@ -1593,7 +1577,6 @@ if st.button(
         st.session_state[
             "selected_date"
         ] = selected_date.isoformat()
-
         st.session_state["historical_detail"] = None
         st.session_state["historical_fixture_id"] = None
 
@@ -1971,7 +1954,6 @@ with st.expander(
     st.write(
         "3. persistência do resultado."
     )
-
     st.write(
         "O contador interno registra somente chamadas "
         "à API-Sports feitas pelo próprio app."
@@ -1992,7 +1974,6 @@ with st.expander(
         "O cache persistente fica em "
         f"`{GITHUB_FILE}`."
     )
-
     st.write(
         "O aplicativo nunca deve substituir um cache "
         "existente por um cache vazio devido a erro de leitura."
