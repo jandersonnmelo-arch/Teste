@@ -12,7 +12,7 @@ import streamlit as st
 # ============================================================
 
 st.set_page_config(
-    page_title="Teste limpo — API-SPORTS v13",
+    page_title="Teste limpo — API-SPORTS v14",
     page_icon="🟣",
     layout="wide",
 )
@@ -622,15 +622,38 @@ def github_load_cache():
         )
 
         if not encoded:
-            return (
-                None,
-                obj.get("sha"),
-                "GitHub retornou o arquivo sem conteúdo/base64.",
+            # GitHub Contents API: arquivos entre 1 MB e 100 MB
+            # podem retornar content="" / encoding="none".
+            # Nesse caso, precisamos pedir o mesmo arquivo como RAW.
+            raw_headers = {
+                **github_headers(),
+                "Accept": "application/vnd.github.raw+json",
+            }
+
+            raw_response = requests.get(
+                github_file_url(),
+                headers=raw_headers,
+                params={"ref": GITHUB_BRANCH},
+                timeout=30,
             )
 
-        content = base64.b64decode(
-            encoded.replace("\n", "")
-        ).decode("utf-8")
+            if not raw_response.ok:
+                return (
+                    None,
+                    obj.get("sha"),
+                    (
+                        "GitHub retornou o arquivo sem base64 e a "
+                        f"leitura RAW falhou: HTTP "
+                        f"{raw_response.status_code}: "
+                        f"{raw_response.text[:500]}"
+                    ),
+                )
+
+            content = raw_response.text
+        else:
+            content = base64.b64decode(
+                encoded.replace("\n", "")
+            ).decode("utf-8")
 
         data = json.loads(content)
 
@@ -689,13 +712,41 @@ def github_load_cache_at_commit(commit_sha):
         encoded = obj.get("content", "")
 
         if not encoded:
-            return None, obj.get("sha"), None
+            # Mesmo fallback RAW usado na leitura normal.
+            raw_headers = {
+                **github_headers(),
+                "Accept": "application/vnd.github.raw+json",
+            }
 
-        content = base64.b64decode(
-            encoded.replace("\n", "")
-        ).decode("utf-8")
+            raw_response = requests.get(
+                github_file_url(),
+                headers=raw_headers,
+                params={"ref": commit_sha},
+                timeout=30,
+            )
 
-        return normalize_cache(json.loads(content)), obj.get("sha"), None
+            if not raw_response.ok:
+                return (
+                    None,
+                    obj.get("sha"),
+                    (
+                        "GitHub histórico sem base64 e leitura RAW "
+                        f"falhou: HTTP {raw_response.status_code}: "
+                        f"{raw_response.text[:500]}"
+                    ),
+                )
+
+            content = raw_response.text
+        else:
+            content = base64.b64decode(
+                encoded.replace("\n", "")
+            ).decode("utf-8")
+
+        return (
+            normalize_cache(json.loads(content)),
+            obj.get("sha"),
+            None,
+        )
 
     except Exception as e:
         return None, None, str(e)
@@ -1667,7 +1718,7 @@ if "historical_fixture_id" not in st.session_state:
 # ============================================================
 
 st.title(
-    "🟣 Teste limpo — API-SPORTS v13"
+    "🟣 Teste limpo — API-SPORTS v14"
 )
 
 st.caption(
@@ -1957,8 +2008,8 @@ with st.expander(
         )
 
     st.info(
-        "Proteção ativa: HTTP 404 do GitHub não é mais interpretado "
-        "como cache vazio."
+        "Proteções ativas: HTTP 404 não é cache vazio e arquivos "
+        "grandes usam leitura RAW quando o GitHub não fornece base64."
     )
 
 
