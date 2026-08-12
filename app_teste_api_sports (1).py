@@ -362,7 +362,9 @@ def restore_historical_detail(cache, fixture_id, historical):
     if not ok:
         return False, save_error
 
-    return True, None
+    # Sucesso: o chamador usa `restored is True` para
+    # confirmar a restauração antes de executar st.rerun().
+    return True
 
 
 # ============================================================
@@ -372,6 +374,7 @@ def restore_historical_detail(cache, fixture_id, historical):
 def merge_caches(remote, local):
     """
     Mescla o cache remoto do GitHub com o cache local.
+
     O objetivo é NUNCA perder informações já persistidas.
 
     Estruturas importantes:
@@ -390,7 +393,6 @@ def merge_caches(remote, local):
     local = normalize_cache(local)
 
     merged = normalize_cache(remote)
-
     # --------------------------------------------------------
     # Contador de chamadas
     # --------------------------------------------------------
@@ -411,7 +413,6 @@ def merge_caches(remote, local):
     local_last = local.get(
         "last_api_call"
     )
-
     if remote_last and local_last:
         if local_last > remote_last:
             merged["last_api_call"] = local_last
@@ -432,7 +433,6 @@ def merge_caches(remote, local):
         "date_searches",
         {},
     )
-
     local_dates = local.get(
         "date_searches",
         {},
@@ -453,8 +453,8 @@ def merge_caches(remote, local):
             and value
         ):
             merged_dates[key] = value
-
     merged["date_searches"] = merged_dates
+
     # --------------------------------------------------------
     # ÍNDICE DE FIXTURES
     # --------------------------------------------------------
@@ -494,7 +494,6 @@ def merge_caches(remote, local):
         "details",
         {},
     )
-
     local_details = local.get(
         "details",
         {},
@@ -515,7 +514,6 @@ def merge_caches(remote, local):
         # por None ou estrutura vazia.
         if value is None:
             continue
-
         if not merged_details[key]:
             merged_details[key] = value
 
@@ -538,6 +536,7 @@ def github_save_cache(cache):
     2. mescla remoto + local;
     3. usa o SHA mais recente;
     4. grava o resultado.
+
     Isso impede que uma operação baseada em cache antigo
     apague enriquecimentos já persistidos.
     """
@@ -577,7 +576,6 @@ def github_save_cache(cache):
             ensure_ascii=False,
             indent=2,
         )
-
         encoded = base64.b64encode(
             content.encode("utf-8")
         ).decode("ascii")
@@ -663,6 +661,7 @@ def github_save_cache(cache):
     except Exception as e:
         return False, str(e)
 
+
 # ============================================================
 # API-SPORTS
 # ============================================================
@@ -702,7 +701,6 @@ def api_get(endpoint, params):
                     "text": response.text[:500],
                 }
             }
-
         if not response.ok:
             return None, payload
 
@@ -744,7 +742,6 @@ def search_fixtures(
 ):
     """
     Procura primeiro no cache persistente.
-
     Se a data existir:
         NÃO chama API-Sports.
 
@@ -767,6 +764,7 @@ def search_fixtures(
             False,
             None,
         )
+
     payload, error = api_get(
         "fixtures",
         {
@@ -785,8 +783,8 @@ def search_fixtures(
         "response",
         [],
     )
-
     register_api_call(cache)
+
     cache.setdefault(
         "date_searches",
         {},
@@ -828,6 +826,7 @@ def search_fixtures(
             True,
             save_error,
         )
+
     return (
         response,
         True,
@@ -848,6 +847,7 @@ def enrich_fixture(
 
     Se já houver details:
         NÃO chama API-Sports.
+
     Se não houver:
         faz UMA chamada /fixtures?id=...
         e salva de forma segura.
@@ -931,6 +931,7 @@ def enrich_fixture(
             True,
             save_error,
         )
+
     return (
         cache["details"][key],
         True,
@@ -948,7 +949,6 @@ if not API_KEY:
         "ou API_FOOTBALL_KEY."
     )
     st.stop()
-
 
 if not GITHUB_TOKEN:
     st.warning(
@@ -971,7 +971,6 @@ if cache_error:
 
     st.stop()
 
-
 # ============================================================
 # INTERFACE
 # ============================================================
@@ -993,6 +992,7 @@ st.caption(
 st.subheader(
     "📊 Controle interno do teste"
 )
+
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -1032,7 +1032,6 @@ with c3:
     )
 
 with st.expander("ℹ️ Estado do cache", expanded=False):
-
     st.write(
         "As métricas acima são lidas diretamente do "
         "cache persistente carregado do GitHub."
@@ -1053,7 +1052,6 @@ with st.expander("ℹ️ Estado do cache", expanded=False):
 if cache.get(
     "last_api_call"
 ):
-
     st.caption(
         "Última chamada registrada pelo app: "
         f"{cache['last_api_call']}"
@@ -1095,7 +1093,6 @@ if st.button(
     with st.spinner(
         "Consultando cache/API..."
     ):
-
         (
             fixtures,
             api_was_called,
@@ -1116,8 +1113,8 @@ if st.button(
         st.error(
             "Não foi possível obter as partidas."
         )
-
     else:
+
         if api_was_called:
 
             st.success(
@@ -1136,7 +1133,6 @@ if st.button(
         st.session_state[
             "fixtures"
         ] = fixtures
-
         st.session_state[
             "selected_date"
         ] = selected_date.isoformat()
@@ -1157,8 +1153,8 @@ if fixtures:
     st.subheader(
         "2️⃣ Selecionar partida"
     )
-
     options = []
+
     for item in fixtures:
 
         fixture = item.get(
@@ -1179,6 +1175,7 @@ if fixtures:
         fixture_id = fixture.get(
             "id"
         )
+
         home = (
             teams
             .get("home", {})
@@ -1220,6 +1217,7 @@ if fixtures:
                 fixture_id,
             )
         )
+
     labels = [
         item[0]
         for item in options
@@ -1238,7 +1236,6 @@ if fixtures:
         "Fixture identificado: "
         f"{selected_fixture_id}"
     )
-
     # --------------------------------------------------------
     # IMPORTANTE:
     # RECARREGA O CACHE PARA SABER SE O DETALHE JÁ EXISTE
@@ -1345,6 +1342,7 @@ if fixtures:
                             selected_fixture_id,
                             historical,
                         )
+
                     if restored is True:
                         st.success(
                             "Enriquecimento restaurado. "
@@ -1363,7 +1361,6 @@ if fixtures:
                     "Não encontrei um enriquecimento dessa partida "
                     "nas últimas versões do cache.json no GitHub."
                 )
-
         if st.button(
             "🟣 Enriquecer somente esta partida",
             type="primary",
@@ -1405,8 +1402,8 @@ if fixtures:
                     "no cache persistente. "
                     "Nenhuma chamada à API-Sports foi feita."
                 )
-
                 st.rerun()
+
             with st.spinner(
                 "Verificando cache e API-Sports..."
             ):
@@ -1425,8 +1422,8 @@ if fixtures:
                 st.error(
                     str(error)
                 )
-
             elif api_was_called:
+
                 st.success(
                     "Consulta à API-Sports realizada "
                     "e resultado salvo no GitHub."
@@ -1447,6 +1444,7 @@ if fixtures:
 # ============================================================
 # DIAGNÓSTICO
 # ============================================================
+
 with st.expander(
     "🔎 Diagnóstico"
 ):
@@ -1486,7 +1484,6 @@ with st.expander(
         "O aplicativo nunca deve substituir um cache "
         "existente por um cache vazio devido a erro de leitura."
     )
-
     st.write(
         "Antes de cada gravação, o aplicativo relê "
         "o cache atual do GitHub e mescla os dados."
