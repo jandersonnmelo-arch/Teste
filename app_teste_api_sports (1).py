@@ -1,7 +1,6 @@
 import base64
 import json
-from datetime import date, datetime, timezone, timedelta
-from zoneinfo import ZoneInfo
+from datetime import date, datetime, timezone
 
 import requests
 import streamlit as st
@@ -12,22 +11,12 @@ import streamlit as st
 # ============================================================
 
 st.set_page_config(
-    page_title="Teste limpo — API-SPORTS v15",
+    page_title="Teste limpo — API-SPORTS",
     page_icon="🟣",
     layout="wide",
 )
 
 BASE_API = "https://v3.football.api-sports.io"
-
-# ============================================================
-# FUSO HORÁRIO OFICIAL DO APLICATIVO
-# ============================================================
-# A API-Sports normalmente trabalha com timestamps ISO-8601/UTC.
-# Toda exibição e toda referência de "hoje" no app passam pelo
-# horário oficial de Manaus.
-APP_TIMEZONE_NAME = "America/Manaus"
-APP_TIMEZONE = ZoneInfo(APP_TIMEZONE_NAME)
-APP_TIMEZONE_LABEL = "🇧🇷 Manaus (AM) — UTC-4"
 
 GITHUB_OWNER = "jandersonnmelo-arch"
 GITHUB_REPO = "Teste"
@@ -35,356 +24,25 @@ GITHUB_BRANCH = "main"
 
 GITHUB_FILE = "dados_app/cache.json"
 
-# Secrets usados pela API-Sports e pela persistência no GitHub.
-# Mantemos os dois nomes aceitos para a chave da API para não quebrar
-# a configuração que já estava funcionando no app.
+
+# ============================================================
+# SECRETS
+# ============================================================
+
+def get_secret(name, default=""):
+    try:
+        return st.secrets.get(name, default)
+    except Exception:
+        return default
+
+
 API_KEY = (
-    st.secrets.get("API_SPORTS_KEY")
-    or st.secrets.get("API_FOOTBALL_KEY")
-    or ""
+    get_secret("API_SPORTS_KEY")
+    or get_secret("API_FOOTBALL_KEY")
 )
 
-GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
+GITHUB_TOKEN = get_secret("GITHUB_TOKEN")
 
-
-# ============================================================
-# CAMPEONATOS PRÉ-SELECIONADOS
-# ============================================================
-# O filtro usa principalmente o ID da competição, porque a
-# API-Sports pode devolver nomes oficiais diferentes dos nomes
-# amigáveis mostrados na interface (ex.: "Serie B" em vez de
-# "Brasileirão Série B").
-ALLOWED_LEAGUE_IDS = {
-    # Brasil
-    71,   # Brasileirão Série A
-    72,   # Brasileirão Série B
-    73,   # Copa do Brasil
-
-    # América do Sul
-    13,   # CONMEBOL Libertadores
-    11,   # CONMEBOL Sudamericana
-    128,  # Liga Profesional Argentina
-
-    # México
-    262,  # Liga MX
-
-    # Europa
-    2,    # UEFA Champions League
-    3,    # UEFA Europa League
-    848,  # UEFA Conference League
-    39,   # Premier League
-    40,   # Championship
-    140,  # La Liga
-    78,   # Bundesliga
-    61,   # Ligue 1
-    135,  # Serie A (Itália)
-    88,   # Eredivisie
-    94,   # Primeira Liga
-
-    # Seleções
-    9,    # Copa América
-    1,    # Copa do Mundo
-}
-
-# Nomes são mantidos como fallback caso algum item não traga
-# o ID esperado no payload.
-ALLOWED_LEAGUE_NAMES = {
-    "Brasileirão Série A",
-    "Brasileirão Série B",
-    "Copa do Brasil",
-    "Copa Libertadores",
-    "Copa Sul-Americana",
-    "CONMEBOL Libertadores",
-    "CONMEBOL Sudamericana",
-    "UEFA Champions League",
-    "UEFA Europa League",
-    "UEFA Conference League",
-    "Premier League",
-    "Championship",
-    "La Liga",
-    "Bundesliga",
-    "Ligue 1",
-    "Serie A",
-    "Serie B",
-    "Eredivisie",
-    "Primeira Liga",
-    "Liga Profesional Argentina",
-    "Liga Profesional de Fútbol",
-    "Primera División",
-    "Primera Division",
-    "Liga MX",
-    "Liga BBVA MX",
-    "Copa América",
-    "Copa America",
-    "Copa do Mundo",
-    "World Cup",
-}
-
-# ============================================================
-# DATA / HORA — MANAUS
-# ============================================================
-
-def now_local():
-    """Retorna o instante atual no horário oficial de Manaus."""
-    return datetime.now(APP_TIMEZONE)
-
-
-def local_today():
-    """Data de hoje segundo o horário de Manaus."""
-    return now_local().date()
-
-
-def parse_fixture_datetime(value):
-    """
-    Converte o timestamp da API-Sports para datetime consciente
-    e normalizado no fuso de Manaus.
-
-    Exemplos aceitos:
-      2026-08-12T22:00:00+00:00
-      2026-08-12T22:00:00Z
-      timestamp sem timezone -> tratado como UTC
-    """
-    if not value:
-        return None
-
-    try:
-        raw = str(value).strip().replace("Z", "+00:00")
-        dt = datetime.fromisoformat(raw)
-
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-
-        return dt.astimezone(APP_TIMEZONE)
-    except (TypeError, ValueError, OverflowError):
-        return None
-
-
-def format_fixture_local_datetime(value):
-    """Exibe a data/hora da partida no padrão brasileiro de Manaus."""
-    dt = parse_fixture_datetime(value)
-    if not dt:
-        return "Data/hora indisponível"
-
-    return dt.strftime("%d/%m/%Y %H:%M")
-
-
-def fixture_local_date(value):
-    """Retorna a data local da partida em Manaus."""
-    dt = parse_fixture_datetime(value)
-    return dt.date() if dt else None
-
-
-def fixture_status_info(fixture):
-    """
-    Produz um status amigável baseado no horário local e no status
-    oficial retornado pela API-Sports.
-    """
-    if not isinstance(fixture, dict):
-        return {
-            "code": "",
-            "label": "Status indisponível",
-            "kind": "unknown",
-            "local_dt": None,
-        }
-
-    local_dt = parse_fixture_datetime(fixture.get("date"))
-    status = fixture.get("status") or {}
-    code = str(status.get("short") or "").upper()
-    elapsed = status.get("elapsed")
-
-    finished_codes = {"FT", "AET", "PEN"}
-    live_codes = {"1H", "HT", "2H", "ET", "BT", "P", "LIVE", "INT", "SUSP"}
-    postponed_codes = {"PST"}
-    cancelled_codes = {"CANC", "ABD", "AWD", "WO"}
-
-    if code in finished_codes:
-        return {
-            "code": code,
-            "label": "✅ FINALIZADO",
-            "kind": "finished",
-            "local_dt": local_dt,
-        }
-
-    if code in cancelled_codes:
-        return {
-            "code": code,
-            "label": "⛔ CANCELADO/ENCERRADO",
-            "kind": "cancelled",
-            "local_dt": local_dt,
-        }
-
-    if code in postponed_codes:
-        return {
-            "code": code,
-            "label": "⏸️ ADIADO",
-            "kind": "postponed",
-            "local_dt": local_dt,
-        }
-
-    # Para jogos ao vivo, a API é a autoridade principal.
-    if code in live_codes:
-        minute_text = f" — {elapsed}'" if elapsed is not None else ""
-        return {
-            "code": code,
-            "label": f"🟢 AO VIVO{minute_text}",
-            "kind": "live",
-            "local_dt": local_dt,
-        }
-
-    # Fallback temporal para partidas futuras sem status reconhecido.
-    now = now_local()
-
-    if local_dt:
-        if local_dt <= now:
-            return {
-                "code": code,
-                "label": "🟢 AO VIVO / EM ANDAMENTO",
-                "kind": "live",
-                "local_dt": local_dt,
-            }
-
-        delta = local_dt - now
-        total_minutes = max(0, int(delta.total_seconds() // 60))
-
-        if local_dt.date() == now.date():
-            if total_minutes < 60:
-                label = f"🟡 COMEÇA EM {total_minutes} MIN"
-            else:
-                hours = total_minutes // 60
-                minutes = total_minutes % 60
-                if minutes:
-                    label = f"🔵 HOJE — EM {hours}H{minutes:02d}"
-                else:
-                    label = f"🔵 HOJE — EM {hours}H"
-
-            return {
-                "code": code,
-                "label": label,
-                "kind": "today",
-                "local_dt": local_dt,
-            }
-
-        tomorrow = now.date() + timedelta(days=1)
-        if local_dt.date() == tomorrow:
-            return {
-                "code": code,
-                "label": f"📅 AMANHÃ — {local_dt.strftime('%H:%M')}",
-                "kind": "tomorrow",
-                "local_dt": local_dt,
-            }
-
-        return {
-            "code": code,
-            "label": f"📆 {local_dt.strftime('%d/%m/%Y')} — {local_dt.strftime('%H:%M')}",
-            "kind": "future",
-            "local_dt": local_dt,
-        }
-
-    return {
-        "code": code,
-        "label": "⚪ HORÁRIO INDISPONÍVEL",
-        "kind": "unknown",
-        "local_dt": None,
-    }
-
-
-def fixture_score_text(item):
-    """Monta o placar atual/final quando a API-Sports o disponibiliza."""
-    score = item.get("score") or {}
-    goals = item.get("goals") or {}
-
-    home = goals.get("home")
-    away = goals.get("away")
-
-    if home is None:
-        home = score.get("fulltime", {}).get("home")
-    if away is None:
-        away = score.get("fulltime", {}).get("away")
-
-    if home is None or away is None:
-        return ""
-
-    return f"{home} x {away}"
-
-
-def fixture_display_label(item):
-    """
-    Label compacto e legível para celular.
-    Mostra campeonato + confronto + horário de Manaus + status.
-    """
-    fixture = item.get("fixture") or {}
-    league = item.get("league") or {}
-    teams = item.get("teams") or {}
-
-    fixture_id = fixture.get("id")
-    home = (teams.get("home") or {}).get("name", "Casa")
-    away = (teams.get("away") or {}).get("name", "Fora")
-    league_name = league.get("name", "Competição desconhecida")
-
-    local_dt = parse_fixture_datetime(fixture.get("date"))
-    status_info = fixture_status_info(fixture)
-    score = fixture_score_text(item)
-
-    time_text = local_dt.strftime("%H:%M") if local_dt else "--:--"
-    score_text = f" • ⚽ {score}" if score else ""
-
-    return (
-        f"🏆 {league_name}  |  ⚽ {home} x {away}  |  "
-        f"🕒 {time_text}  |  {status_info['label']}{score_text}"
-    )
-
-
-def fixture_short_label(item):
-    """Versão ainda mais curta para a lista de seleção."""
-    fixture = item.get("fixture") or {}
-    league = item.get("league") or {}
-    teams = item.get("teams") or {}
-
-    home = (teams.get("home") or {}).get("name", "Casa")
-    away = (teams.get("away") or {}).get("name", "Fora")
-    league_name = league.get("name", "Competição desconhecida")
-
-    local_dt = parse_fixture_datetime(fixture.get("date"))
-    status_info = fixture_status_info(fixture)
-    score = fixture_score_text(item)
-
-    time_text = local_dt.strftime("%H:%M") if local_dt else "--:--"
-    score_text = f" • ⚽ {score}" if score else ""
-
-    return (
-        f"🏆 {league_name}  •  {home} x {away}  •  "
-        f"{time_text}  •  {status_info['label']}{score_text}"
-    )
-
-def league_is_allowed(league):
-    """Retorna True somente para campeonatos previamente autorizados."""
-    if not isinstance(league, dict):
-        return False
-
-    league_id = league.get("id")
-    if league_id is not None:
-        try:
-            if int(league_id) in ALLOWED_LEAGUE_IDS:
-                return True
-        except (TypeError, ValueError):
-            pass
-
-    league_name = str(league.get("name", "")).strip()
-    return league_name in ALLOWED_LEAGUE_NAMES
-
-
-def filter_allowed_fixtures(fixtures):
-    """
-    Remove localmente partidas de campeonatos não autorizados.
-
-    Não faz nenhuma chamada à API-Sports. O cache continua podendo
-    armazenar a resposta original; o filtro é aplicado na interface.
-    """
-    return [
-        item
-        for item in (fixtures or [])
-        if league_is_allowed(item.get("league", {}))
-    ]
 
 # ============================================================
 # CACHE PADRÃO
@@ -392,7 +50,7 @@ def filter_allowed_fixtures(fixtures):
 
 def empty_cache():
     return {
-        "version": 5,
+        "version": 2,
         "api_calls": 0,
         "last_api_call": None,
         "quota": {
@@ -465,7 +123,6 @@ def normalize_cache(data):
         cache["fixtures"] = data[
             "fixtures"
         ]
-
     if isinstance(
         data.get("details"),
         dict,
@@ -501,70 +158,12 @@ def github_file_url():
 # GITHUB — LEITURA
 # ============================================================
 
-def github_cache_diagnostic(cache, sha, error):
-    """
-    Produz um diagnóstico local da persistência sem fazer nenhuma
-    chamada adicional ao GitHub ou à API-Sports.
-    """
-    details = (
-        (cache or {}).get("details", {})
-        if isinstance(cache, dict)
-        else {}
-    )
-    fixtures = (
-        (cache or {}).get("fixtures", {})
-        if isinstance(cache, dict)
-        else {}
-    )
-    quota = (
-        (cache or {}).get("quota", {})
-        if isinstance(cache, dict)
-        else {}
-    )
-
-    fixture_1607648 = details.get("1607648")
-    return {
-        "owner": GITHUB_OWNER,
-        "repo": GITHUB_REPO,
-        "branch": GITHUB_BRANCH,
-        "file": GITHUB_FILE,
-        "cache_loaded": isinstance(cache, dict),
-        "sha": sha,
-        "error": error,
-        "api_calls_internal": (
-            (cache or {}).get("api_calls")
-            if isinstance(cache, dict)
-            else None
-        ),
-        "daily_used": quota.get("daily_used"),
-        "daily_remaining": quota.get("daily_remaining"),
-        "daily_limit": quota.get("daily_limit"),
-        "dates": len(
-            (cache or {}).get("date_searches", {})
-            if isinstance(cache, dict)
-            else {}
-        ),
-        "fixtures": len(fixtures),
-        "details": len(details),
-        "fixture_1607648": (
-            "ENCONTRADO" if fixture_1607648 is not None
-            else "NÃO ENCONTRADO"
-        ),
-        "fixture_1607648_empty": (
-            fixture_1607648.get("empty")
-            if isinstance(fixture_1607648, dict)
-            else None
-        ),
-    }
-
-
 def github_load_cache():
     """
     Lê o cache persistente do GitHub.
 
     Retorno:
         cache, sha, erro
-
     IMPORTANTE:
     se houver erro de leitura, NÃO retorna um cache vazio
     para posterior gravação. Isso evita apagar dados.
@@ -588,20 +187,12 @@ def github_load_cache():
             timeout=20,
         )
 
-        # 404 é tratado como erro explícito.
-        # Em repositórios privados, GitHub pode devolver 404 quando
-        # o token não possui acesso ao repositório/arquivo. Portanto,
-        # nunca podemos interpretar 404 como "cache vazio".
+        # Arquivo ainda não existe.
         if response.status_code == 404:
             return (
+                empty_cache(),
                 None,
                 None,
-                (
-                    "GitHub GET 404: cache.json não foi encontrado "
-                    "ou o GITHUB_TOKEN não tem acesso ao repositório. "
-                    f"URL: {github_file_url()} | branch: {GITHUB_BRANCH} | "
-                    f"arquivo: {GITHUB_FILE}"
-                ),
             )
 
         if not response.ok:
@@ -622,43 +213,19 @@ def github_load_cache():
         )
 
         if not encoded:
-            # GitHub Contents API: arquivos entre 1 MB e 100 MB
-            # podem retornar content="" / encoding="none".
-            # Nesse caso, precisamos pedir o mesmo arquivo como RAW.
-            raw_headers = {
-                **github_headers(),
-                "Accept": "application/vnd.github.raw+json",
-            }
-
-            raw_response = requests.get(
-                github_file_url(),
-                headers=raw_headers,
-                params={"ref": GITHUB_BRANCH},
-                timeout=30,
+            return (
+                empty_cache(),
+                obj.get("sha"),
+                None,
             )
 
-            if not raw_response.ok:
-                return (
-                    None,
-                    obj.get("sha"),
-                    (
-                        "GitHub retornou o arquivo sem base64 e a "
-                        f"leitura RAW falhou: HTTP "
-                        f"{raw_response.status_code}: "
-                        f"{raw_response.text[:500]}"
-                    ),
-                )
-
-            content = raw_response.text
-        else:
-            content = base64.b64decode(
-                encoded.replace("\n", "")
-            ).decode("utf-8")
+        content = base64.b64decode(
+            encoded.replace("\n", "")
+        ).decode("utf-8")
 
         data = json.loads(content)
 
         cache = normalize_cache(data)
-
         return (
             cache,
             obj.get("sha"),
@@ -679,7 +246,6 @@ def github_commits_url():
         f"https://api.github.com/repos/"
         f"{GITHUB_OWNER}/{GITHUB_REPO}/commits"
     )
-
 
 def github_load_cache_at_commit(commit_sha):
     """
@@ -712,41 +278,13 @@ def github_load_cache_at_commit(commit_sha):
         encoded = obj.get("content", "")
 
         if not encoded:
-            # Mesmo fallback RAW usado na leitura normal.
-            raw_headers = {
-                **github_headers(),
-                "Accept": "application/vnd.github.raw+json",
-            }
+            return None, obj.get("sha"), None
 
-            raw_response = requests.get(
-                github_file_url(),
-                headers=raw_headers,
-                params={"ref": commit_sha},
-                timeout=30,
-            )
+        content = base64.b64decode(
+            encoded.replace("\n", "")
+        ).decode("utf-8")
 
-            if not raw_response.ok:
-                return (
-                    None,
-                    obj.get("sha"),
-                    (
-                        "GitHub histórico sem base64 e leitura RAW "
-                        f"falhou: HTTP {raw_response.status_code}: "
-                        f"{raw_response.text[:500]}"
-                    ),
-                )
-
-            content = raw_response.text
-        else:
-            content = base64.b64decode(
-                encoded.replace("\n", "")
-            ).decode("utf-8")
-
-        return (
-            normalize_cache(json.loads(content)),
-            obj.get("sha"),
-            None,
-        )
+        return normalize_cache(json.loads(content)), obj.get("sha"), None
 
     except Exception as e:
         return None, None, str(e)
@@ -829,70 +367,22 @@ def github_find_historical_detail(fixture_id, max_commits=20):
 def restore_historical_detail(cache, fixture_id, historical):
     """
     Restaura um enriquecimento encontrado no histórico do GitHub.
-
-    A restauração é feita sobre uma leitura FRESCA do GitHub para
-    evitar que um cache antigo sobrescreva ou esconda o detalhe
-    histórico.
-
-    Não chama a API-Sports.
+    Não chama API-Sports.
     """
     key = str(fixture_id)
 
     if not historical or not historical.get("detail"):
         return False
 
-    historical_detail = historical["detail"]
+    cache.setdefault("details", {})[key] = historical["detail"]
 
-    # --------------------------------------------------------
-    # 1. Leitura fresca do GitHub
-    # --------------------------------------------------------
-    fresh_cache, _, fresh_error = github_load_cache()
-
-    if fresh_error:
-        return False, fresh_error
-
-    if fresh_cache is None:
-        return False, "Não foi possível carregar o cache atual do GitHub."
-
-    # --------------------------------------------------------
-    # 2. Injeta o detalhe diretamente no cache mais recente.
-    # --------------------------------------------------------
-    fresh_cache = normalize_cache(fresh_cache)
-    fresh_cache.setdefault("details", {})[key] = historical_detail
-
-    # --------------------------------------------------------
-    # 3. Grava usando a proteção normal de merge/conflito.
-    # --------------------------------------------------------
-    ok, save_error = github_save_cache(fresh_cache)
+    ok, save_error = github_save_cache(cache)
 
     if not ok:
         return False, save_error
 
-    # --------------------------------------------------------
-    # 4. Confirma imediatamente no GitHub.
-    # --------------------------------------------------------
-    verified_cache, _, verify_error = github_load_cache()
-
-    if verify_error:
-        return False, (
-            "A restauração foi enviada, mas não foi possível "
-            f"confirmar a leitura do GitHub: {verify_error}"
-        )
-
-    verified_detail = (
-        verified_cache
-        .get("details", {})
-        .get(key)
-        if verified_cache
-        else None
-    )
-
-    if verified_detail is None:
-        return False, (
-            "A gravação retornou sucesso, mas o detalhe "
-            f"do fixture {key} não apareceu no cache do GitHub."
-        )
-
+    # Sucesso: o chamador usa `restored is True` para
+    # confirmar a restauração antes de executar st.rerun().
     return True
 
 
@@ -965,7 +455,6 @@ def merge_caches(remote, local):
     local_last = local.get(
         "last_api_call"
     )
-
     if remote_last and local_last:
         if local_last > remote_last:
             merged["last_api_call"] = local_last
@@ -986,7 +475,6 @@ def merge_caches(remote, local):
         "date_searches",
         {},
     )
-
     local_dates = local.get(
         "date_searches",
         {},
@@ -1007,7 +495,6 @@ def merge_caches(remote, local):
             and value
         ):
             merged_dates[key] = value
-
     merged["date_searches"] = merged_dates
 
     # --------------------------------------------------------
@@ -1049,7 +536,6 @@ def merge_caches(remote, local):
         "details",
         {},
     )
-
     local_details = local.get(
         "details",
         {},
@@ -1070,7 +556,6 @@ def merge_caches(remote, local):
         # por None ou estrutura vazia.
         if value is None:
             continue
-
         if not merged_details[key]:
             merged_details[key] = value
 
@@ -1133,7 +618,6 @@ def github_save_cache(cache):
             ensure_ascii=False,
             indent=2,
         )
-
         encoded = base64.b64encode(
             content.encode("utf-8")
         ).decode("ascii")
@@ -1343,7 +827,6 @@ def api_get(endpoint, params, cache=None):
     except Exception as e:
         return None, str(e)
 
-
 def api_status(cache):
     """
     Consulta o endpoint /status.
@@ -1385,7 +868,6 @@ def api_status(cache):
 
         if current is not None:
             quota["daily_used"] = int(current)
-
         if limit_day is not None:
             quota["daily_limit"] = int(limit_day)
 
@@ -1451,9 +933,7 @@ def search_fixtures(
         e salva de forma segura.
     """
 
-    # A chave inclui o fuso para impedir que um resultado obtido
-    # em outro timezone seja reutilizado como se fosse Manaus.
-    key = f"{selected_date.isoformat()}|{APP_TIMEZONE_NAME}"
+    key = selected_date.isoformat()
 
     cached = (
         cache
@@ -1471,8 +951,7 @@ def search_fixtures(
     payload, error = api_get(
         "fixtures",
         {
-            "date": selected_date.isoformat(),
-            "timezone": APP_TIMEZONE_NAME,
+            "date": key
         },
         cache=cache,
     )
@@ -1538,6 +1017,165 @@ def search_fixtures(
         True,
         None,
     )
+
+
+# ============================================================
+# ENRIQUECIMENTO EM BLOCO — TESTE
+# ============================================================
+
+def enrich_fixtures_batch(cache, fixture_ids):
+    """
+    Teste de enriquecimento em lote.
+
+    Envia vários fixture IDs em UMA única requisição:
+        /fixtures?ids=ID1-ID2-ID3...
+
+    A API-Sports aceita até 20 IDs por requisição.
+    Cada item retornado é salvo individualmente em `details`,
+    mas a requisição HTTP é contabilizada somente uma vez.
+
+    Partidas que já possuem `details` não entram no pedido.
+    """
+
+    # Normaliza IDs, remove duplicados e ignora valores vazios.
+    normalized_ids = []
+    seen = set()
+
+    for fixture_id in fixture_ids:
+        if fixture_id is None:
+            continue
+
+        key = str(fixture_id).strip()
+
+        if not key or key in seen:
+            continue
+
+        seen.add(key)
+        normalized_ids.append(key)
+
+    if not normalized_ids:
+        return {
+            "requested_ids": [],
+            "already_enriched": [],
+            "new_ids": [],
+            "returned_ids": [],
+            "enriched_ids": [],
+            "api_was_called": False,
+            "error": None,
+        }
+
+    # O endpoint permite no máximo 20 IDs por requisição.
+    if len(normalized_ids) > 20:
+        return {
+            "requested_ids": normalized_ids,
+            "already_enriched": [],
+            "new_ids": [],
+            "returned_ids": [],
+            "enriched_ids": [],
+            "api_was_called": False,
+            "error": (
+                "O teste em lote aceita no máximo 20 partidas "
+                "por chamada. Selecione até 20 fixture IDs."
+            ),
+        }
+
+    details_cache = cache.setdefault("details", {})
+
+    already_enriched = [
+        key for key in normalized_ids
+        if details_cache.get(key) is not None
+    ]
+
+    new_ids = [
+        key for key in normalized_ids
+        if key not in already_enriched
+    ]
+
+    # Nada novo para consultar.
+    if not new_ids:
+        return {
+            "requested_ids": normalized_ids,
+            "already_enriched": already_enriched,
+            "new_ids": [],
+            "returned_ids": [],
+            "enriched_ids": [],
+            "api_was_called": False,
+            "error": None,
+        }
+
+    # UMA única requisição para todos os IDs novos.
+    ids_param = "-".join(new_ids)
+
+    payload, error = api_get(
+        "fixtures",
+        {
+            "ids": ids_param
+        },
+        cache=cache,
+    )
+
+    if error:
+        return {
+            "requested_ids": normalized_ids,
+            "already_enriched": already_enriched,
+            "new_ids": new_ids,
+            "returned_ids": [],
+            "enriched_ids": [],
+            "api_was_called": False,
+            "error": error,
+        }
+
+    response = payload.get("response", [])
+
+    # UMA chamada HTTP real => +1 no contador interno.
+    register_api_call(cache)
+
+    returned_ids = []
+    enriched_ids = []
+
+    for item in response:
+        fixture = item.get("fixture") or {}
+        fixture_id = fixture.get("id")
+
+        if fixture_id is None:
+            continue
+
+        key = str(fixture_id)
+        returned_ids.append(key)
+
+        details_cache[key] = {
+            "response": [item],
+            "errors": payload.get("errors", {}),
+            "empty": False,
+            "batch": True,
+        }
+
+        enriched_ids.append(key)
+
+    # Se a API não devolveu um dos IDs solicitados, não marcamos
+    # esse jogo como enriquecido. Isso permite tentar novamente depois.
+    ok, save_error = github_save_cache(cache)
+
+    if not ok:
+        return {
+            "requested_ids": normalized_ids,
+            "already_enriched": already_enriched,
+            "new_ids": new_ids,
+            "returned_ids": returned_ids,
+            "enriched_ids": enriched_ids,
+            "api_was_called": True,
+            "error": save_error,
+        }
+
+    return {
+        "requested_ids": normalized_ids,
+        "already_enriched": already_enriched,
+        "new_ids": new_ids,
+        "returned_ids": returned_ids,
+        "enriched_ids": enriched_ids,
+        "api_was_called": True,
+        "error": None,
+    }
 
 
 # ============================================================
@@ -1649,7 +1287,6 @@ def enrich_fixture(
 # ============================================================
 # CARREGAMENTO INICIAL
 # ============================================================
-
 if not API_KEY:
     st.error(
         "Configure o Secret API_SPORTS_KEY "
@@ -1670,12 +1307,6 @@ cache, cache_sha, cache_error = (
     github_load_cache()
 )
 
-github_diag = github_cache_diagnostic(
-    cache,
-    cache_sha,
-    cache_error,
-)
-
 if cache_error:
 
     st.error(
@@ -1686,17 +1317,19 @@ if cache_error:
     st.stop()
 
 
-# IMPORTANTE:
-# A consulta /status NÃO é executada automaticamente a cada rerun.
-# Isso evita uma requisição extra sempre que o usuário troca de
-# partida, restaura histórico ou o Streamlit reexecuta a página.
-#
-# O consumo real continua disponível no botão:
-# "🔄 Atualizar consumo real".
-#
-# Os valores exibidos inicialmente são o último snapshot persistido.
+# Atualiza o consumo diário real sem gastar a cota diária.
+# O endpoint /status é específico para consultar o estado da conta.
 if "quota_status_loaded" not in st.session_state:
     st.session_state["quota_status_loaded"] = False
+
+if not st.session_state["quota_status_loaded"]:
+    _, quota_status_error = api_status(cache)
+    st.session_state["quota_status_loaded"] = True
+
+    # Persiste apenas o snapshot de quota se ele trouxe dados.
+    # Não registra isso como chamada da API-Sports.
+    if not quota_status_error:
+        github_save_cache(cache)
 
 
 # ============================================================
@@ -1716,20 +1349,13 @@ if "historical_fixture_id" not in st.session_state:
 # ============================================================
 # INTERFACE
 # ============================================================
-
 st.title(
-    "🟣 Teste limpo — API-SPORTS v15"
+    "🟣 Teste limpo — API-SPORTS"
 )
 
 st.caption(
-    "Protótipo independente para diagnosticar descoberta, "
-    "enriquecimento, persistência, leitura do GitHub e atualização "
-    "imediata da interface."
-)
-
-st.info(
-    f"🕐 **Horário oficial do aplicativo:** {APP_TIMEZONE_LABEL}  •  "
-    f"**Agora:** {now_local().strftime('%d/%m/%Y %H:%M')}"
+    "Protótipo independente para diagnosticar "
+    "descoberta, enriquecimento e persistência."
 )
 
 
@@ -1739,13 +1365,6 @@ st.info(
 
 st.subheader(
     "🟢 Consumo real da API-Sports"
-)
-
-st.caption(
-    "Os valores abaixo mostram o último snapshot real salvo da conta. "
-    "Para consultar o consumo atual da API-Sports, use "
-    "🔄 Atualizar consumo real. O contador interno registra somente "
-    "chamadas de dados feitas pelo próprio aplicativo."
 )
 
 quota = cache.get("quota", {})
@@ -1810,22 +1429,9 @@ else:
     )
 
 if quota.get("updated_at"):
-    quota_updated = quota["updated_at"]
-
-    try:
-        quota_dt = datetime.fromisoformat(
-            str(quota_updated).replace("Z", "+00:00")
-        ).astimezone(APP_TIMEZONE)
-
-        quota_updated_display = quota_dt.strftime(
-            "%d/%m/%Y %H:%M:%S"
-        )
-    except (TypeError, ValueError, OverflowError):
-        quota_updated_display = str(quota_updated)
-
     st.caption(
         "Consumo real atualizado em: "
-        f"{quota_updated_display} — Manaus (AM)"
+        f"{quota['updated_at']}"
     )
 
 if st.button(
@@ -1910,7 +1516,6 @@ with st.expander("ℹ️ Estado do cache", expanded=False):
         "O consumo real diário e por minuto vem dos "
         "limites informados pela própria API-Sports."
     )
-
     st.write(
         "Uma partida só conta como enriquecida quando existe "
         "um registro não vazio em `details`."
@@ -1923,97 +1528,6 @@ with st.expander("ℹ️ Estado do cache", expanded=False):
     )
 
 
-# ============================================================
-# DIAGNÓSTICO VISÍVEL DA PERSISTÊNCIA
-# ============================================================
-
-with st.expander(
-    "🔗 Diagnóstico GitHub / cache",
-    expanded=True,
-):
-    st.caption(
-        "Leitura do cache persistente, sem fazer chamada extra "
-        "à API-Sports."
-    )
-
-    d1, d2, d3 = st.columns(3)
-
-    with d1:
-        st.metric(
-            "Cache carregado",
-            "✅ SIM" if github_diag["cache_loaded"] else "❌ NÃO",
-        )
-
-    with d2:
-        st.metric(
-            "Details",
-            github_diag["details"]
-            if github_diag["details"] is not None
-            else "—",
-        )
-
-    with d3:
-        st.metric(
-            "Fixture 1607648",
-            github_diag["fixture_1607648"],
-        )
-
-    st.write(
-        f"**Repositório:** `{github_diag['owner']}/{github_diag['repo']}`"
-    )
-    st.write(
-        f"**Branch:** `{github_diag['branch']}`"
-    )
-    st.write(
-        f"**Arquivo:** `{github_diag['file']}`"
-    )
-
-    if github_diag["sha"]:
-        st.caption(
-            f"SHA do arquivo carregado: `{github_diag['sha']}`"
-        )
-
-    if github_diag["cache_loaded"]:
-        st.success(
-            "O aplicativo carregou um cache válido do GitHub."
-        )
-        st.write(
-            f"**Chamadas internas registradas:** "
-            f"{github_diag['api_calls_internal']}"
-        )
-        st.write(
-            f"**Consumo real persistido:** "
-            f"{github_diag['daily_used']} / "
-            f"{github_diag['daily_limit']} "
-            f"(restantes: {github_diag['daily_remaining']})"
-        )
-        st.write(
-            f"**Datas:** {github_diag['dates']}  •  "
-            f"**Fixtures indexados:** {github_diag['fixtures']}  •  "
-            f"**Enriquecimentos:** {github_diag['details']}"
-        )
-
-        if github_diag["fixture_1607648"] == "ENCONTRADO":
-            st.success(
-                "Fixture 1607648 encontrado no `details` do cache. "
-                "O app deve reconhecer essa partida como já enriquecida."
-            )
-        else:
-            st.info(
-                "Fixture 1607648 não está no `details` do cache carregado."
-            )
-    else:
-        st.error(
-            "O aplicativo não conseguiu carregar um cache válido. "
-            "Nenhuma gravação deve ser feita enquanto esse erro existir."
-        )
-
-    st.info(
-        "Proteções ativas: HTTP 404 não é cache vazio e arquivos "
-        "grandes usam leitura RAW quando o GitHub não fornece base64."
-    )
-
-
 if cache.get(
     "last_api_call"
 ):
@@ -2023,7 +1537,6 @@ if cache.get(
         f"{cache['last_api_call']}"
     )
 
-
 # ============================================================
 # BUSCAR PARTIDAS
 # ============================================================
@@ -2032,14 +1545,9 @@ st.subheader(
     "1️⃣ Buscar partidas"
 )
 
-st.caption(
-    "🎯 Filtro ativo: somente campeonatos pré-acertados "
-    "(incluindo Argentina e México)."
-)
-
 selected_date = st.date_input(
     "Data",
-    value=local_today(),
+    value=date.today(),
 )
 
 
@@ -2091,50 +1599,21 @@ if st.button(
         if api_was_called:
 
             st.success(
-                f"Encontradas {len(fixtures)} partidas nos "
-                "campeonatos pré-selecionados. "
+                f"Retornaram {len(fixtures)} partidas. "
                 "Esta operação consultou a API-Sports."
             )
 
         else:
 
             st.info(
-                f"Encontradas {len(fixtures)} partidas nos "
-                "campeonatos pré-selecionados a partir do CACHE — "
-                "nenhuma chamada à API-Sports foi feita."
+                f"Retornaram {len(fixtures)} partidas "
+                "a partir do CACHE — nenhuma chamada "
+                "à API-Sports foi feita."
             )
-
-        total_before_filter = st.session_state.get(
-            "fixtures_total_found",
-            len(fixtures),
-        )
-        allowed_after_filter = st.session_state.get(
-            "fixtures_allowed_found",
-            len(fixtures),
-        )
-
-        if total_before_filter != allowed_after_filter:
-            st.caption(
-                f"{total_before_filter - allowed_after_filter} "
-                "partida(s) de outros campeonatos foram ocultadas "
-                "pelo filtro pré-acertado."
-            )
-
-        # Filtra localmente para mostrar somente os campeonatos
-        # previamente definidos. Isso não consome a API-Sports.
-        allowed_fixtures = filter_allowed_fixtures(fixtures)
 
         st.session_state[
             "fixtures"
-        ] = allowed_fixtures
-
-        st.session_state[
-            "fixtures_total_found"
-        ] = len(fixtures)
-
-        st.session_state[
-            "fixtures_allowed_found"
-        ] = len(allowed_fixtures)
+        ] = fixtures
 
         st.session_state[
             "selected_date"
@@ -2160,209 +1639,86 @@ if fixtures:
         "2️⃣ Selecionar partida"
     )
 
-    # --------------------------------------------------------
-    # RESUMO RÁPIDO DA LISTA
-    # --------------------------------------------------------
-
-    league_groups = {}
-
-    for item in fixtures:
-        league = item.get("league") or {}
-        league_name = league.get(
-            "name",
-            "Competição desconhecida",
-        )
-        league_groups.setdefault(
-            league_name,
-            []
-        ).append(item)
-
-    st.caption(
-        f"📋 {len(fixtures)} partida(s) • "
-        f"🏆 {len(league_groups)} campeonato(s) • "
-        f"🕒 Horários em Manaus"
-    )
-
-    # --------------------------------------------------------
-    # LISTA VISUAL AGRUPADA POR CAMPEONATO
-    # --------------------------------------------------------
-    # No celular fica muito mais fácil identificar primeiro o
-    # campeonato e depois os jogos daquela competição.
-
-    for league_name in sorted(league_groups):
-        group = league_groups[league_name]
-
-        with st.expander(
-            f"🏆 {league_name} — {len(group)} jogo(s)",
-            expanded=True,
-        ):
-            for item in group:
-                fixture = item.get("fixture") or {}
-                teams = item.get("teams") or {}
-
-                fixture_id = fixture.get("id")
-                home = (
-                    teams.get("home") or {}
-                ).get(
-                    "name",
-                    "Casa",
-                )
-                away = (
-                    teams.get("away") or {}
-                ).get(
-                    "name",
-                    "Fora",
-                )
-
-                local_dt = parse_fixture_datetime(
-                    fixture.get("date")
-                )
-                status_info = fixture_status_info(
-                    fixture
-                )
-                score = fixture_score_text(item)
-
-                time_text = (
-                    local_dt.strftime("%H:%M")
-                    if local_dt
-                    else "--:--"
-                )
-
-                score_text = (
-                    f" • ⚽ {score}"
-                    if score
-                    else ""
-                )
-
-                st.markdown(
-                    f"**⚽ {home} x {away}**  "
-                    f"• 🕒 **{time_text}**  "
-                    f"• {status_info['label']}"
-                    f"{score_text}"
-                )
-
-    st.divider()
-
-    # --------------------------------------------------------
-    # SELETOR COMPACTO
-    # --------------------------------------------------------
-    # Mantemos o selectbox para preservar toda a lógica existente
-    # de enriquecimento, cache e restauração, mas agora com um
-    # label muito menor e muito mais legível.
-
     options = []
-
     for item in fixtures:
+
         fixture = item.get(
             "fixture",
+            {},
+        )
+
+        league = item.get(
+            "league",
+            {},
+        )
+
+        teams = item.get(
+            "teams",
             {},
         )
 
         fixture_id = fixture.get(
             "id"
         )
-
-        options.append(
-            (
-                fixture_short_label(item),
-                fixture_id,
+        home = (
+            teams
+            .get("home", {})
+            .get(
+                "name",
+                "Casa",
             )
         )
 
+        away = (
+            teams
+            .get("away", {})
+            .get(
+                "name",
+                "Fora",
+            )
+        )
+
+        league_name = league.get(
+            "name",
+            "Competição desconhecida",
+        )
+
+        date_text = fixture.get(
+            "date",
+            "",
+        )
+
+        label = (
+            f"{date_text} | "
+            f"{home} x {away} | "
+            f"{league_name} | "
+            f"ID {fixture_id}"
+        )
+
+        options.append(
+            (
+                label,
+                fixture_id,
+            )
+        )
     labels = [
         item[0]
         for item in options
     ]
 
-    # Mantém a partida que acabou de ser enriquecida selecionada
-    # após o rerun automático.
-    saved_selected_fixture = st.session_state.get(
-        "selected_fixture_id"
-    )
-
-    default_index = 0
-
-    if saved_selected_fixture is not None:
-        for idx, (_, fixture_id) in enumerate(options):
-            if fixture_id == saved_selected_fixture:
-                default_index = idx
-                break
-
     selected_label = st.selectbox(
-        "Escolha o jogo para analisar",
+        "Partida",
         labels,
-        index=default_index,
     )
 
     selected_fixture_id = dict(
         options
     )[selected_label]
 
-    st.session_state["selected_fixture_id"] = (
-        selected_fixture_id
+    st.info(
+        "Fixture identificado: "
+        f"{selected_fixture_id}"
     )
-
-    # Exibe a partida selecionada de forma limpa.
-    selected_item = next(
-        (
-            item
-            for item in fixtures
-            if (
-                item.get("fixture", {})
-                .get("id")
-                == selected_fixture_id
-            )
-        ),
-        None,
-    )
-
-    if selected_item:
-        selected_fixture = selected_item.get(
-            "fixture",
-            {}
-        )
-        selected_teams = selected_item.get(
-            "teams",
-            {}
-        )
-        selected_league = selected_item.get(
-            "league",
-            {}
-        )
-
-        selected_home = (
-            selected_teams.get("home") or {}
-        ).get(
-            "name",
-            "Casa",
-        )
-        selected_away = (
-            selected_teams.get("away") or {}
-        ).get(
-            "name",
-            "Fora",
-        )
-
-        selected_dt = parse_fixture_datetime(
-            selected_fixture.get("date")
-        )
-        selected_status = fixture_status_info(
-            selected_fixture
-        )
-
-        if selected_dt:
-            selected_when = selected_dt.strftime(
-                "%d/%m/%Y às %H:%M"
-            )
-        else:
-            selected_when = "data/hora indisponível"
-
-        st.success(
-            f"🏆 **{selected_league.get('name', 'Competição desconhecida')}**\n\n"
-            f"⚽ **{selected_home} x {selected_away}**\n\n"
-            f"🕒 **{selected_when} — Manaus (AM)**\n\n"
-            f"{selected_status['label']}  •  Fixture ID: {selected_fixture_id}"
-        )
 
     # --------------------------------------------------------
     # IMPORTANTE:
@@ -2487,16 +1843,35 @@ if fixtures:
                     )
 
                 if restored is True:
-                    st.session_state["historical_detail"] = None
-                    st.session_state["historical_fixture_id"] = None
+                    # Confirma no GitHub antes de recarregar a interface.
+                    verified_cache, _, verify_error = github_load_cache()
 
-                    st.success(
-                        "✅ Enriquecimento restaurado e confirmado "
-                        "no cache do GitHub. Nenhuma chamada à "
-                        "API-Sports foi feita."
-                    )
-                    st.rerun()
-
+                    if verify_error:
+                        st.error(
+                            "A gravação foi enviada, mas não foi possível "
+                            f"confirmar o cache no GitHub: {verify_error}"
+                        )
+                    elif (
+                        verified_cache
+                        .get("details", {})
+                        .get(str(selected_fixture_id))
+                        is not None
+                    ):
+                        st.session_state["historical_detail"] = None
+                        st.session_state["historical_fixture_id"] = None
+                        st.success(
+                            "✅ Enriquecimento restaurado e confirmado no "
+                            "cache do GitHub. Nenhuma chamada à API-Sports "
+                            "foi feita."
+                        )
+                        st.rerun()
+                    else:
+                        st.error(
+                            "A gravação retornou sucesso, mas o registro "
+                            "não apareceu no cache do GitHub após a leitura "
+                            "de confirmação. Nenhuma nova chamada à API-Sports "
+                            "foi feita."
+                        )
                 elif isinstance(restored, tuple) and not restored[0]:
                     st.error(
                         f"Não foi possível restaurar: {restored[1]}"
@@ -2506,6 +1881,175 @@ if fixtures:
                         "Não foi possível restaurar o enriquecimento histórico."
                     )
 
+
+        # --------------------------------------------------------
+        # TESTE DE ENRIQUECIMENTO EM BLOCO
+        # --------------------------------------------------------
+
+        st.markdown("---")
+        st.subheader("🧪 Teste de enriquecimento em bloco")
+        st.caption(
+            "Teste experimental: até 10 partidas selecionadas abaixo "
+            "serão enviadas em uma única requisição /fixtures?ids=..."
+        )
+
+        # Monta as opções a partir das partidas carregadas.
+        batch_options = [
+            (label, fixture_id)
+            for label, fixture_id in options
+        ]
+
+        batch_labels = [item[0] for item in batch_options]
+
+        default_batch_count = min(10, len(batch_labels))
+
+        selected_batch_labels = st.multiselect(
+            "Selecione até 10 partidas para o teste",
+            batch_labels,
+            default=batch_labels[:default_batch_count],
+            key="batch_fixture_selection",
+        )
+
+        selected_batch_ids = [
+            dict(batch_options)[label]
+            for label in selected_batch_labels
+        ]
+
+        st.caption(
+            f"Selecionadas: {len(selected_batch_ids)} | "
+            "máximo recomendado neste teste: 10"
+        )
+
+        if st.button(
+            "🚀 Executar 1 chamada para o bloco",
+            type="secondary",
+            disabled=not selected_batch_ids,
+        ):
+            # Leitura fresca antes de gastar a API.
+            batch_cache, _, batch_error = github_load_cache()
+
+            if batch_error:
+                st.error(batch_error)
+                st.stop()
+            before_calls = int(batch_cache.get("api_calls", 0))
+            before_details = set(
+                batch_cache.get("details", {}).keys()
+            )
+
+            with st.spinner(
+                "Enviando o bloco em uma única chamada..."
+            ):
+                batch_result = enrich_fixtures_batch(
+                    batch_cache,
+                    selected_batch_ids,
+                )
+
+            after_calls = int(batch_cache.get("api_calls", 0))
+            actual_delta = after_calls - before_calls
+
+            if batch_result["error"]:
+                st.error(
+                    f"❌ Teste em bloco terminou com erro: "
+                    f"{batch_result['error']}"
+                )
+            else:
+                st.success(
+                    "✅ Teste em bloco concluído."
+                )
+
+                b1, b2, b3, b4 = st.columns(4)
+
+                with b1:
+                    st.metric(
+                        "Partidas selecionadas",
+                        len(batch_result["requested_ids"]),
+                    )
+
+                with b2:
+                    st.metric(
+                        "Novas no bloco",
+                        len(batch_result["new_ids"]),
+                    )
+
+                with b3:
+                    st.metric(
+                        "Retornadas pela API",
+                        len(batch_result["returned_ids"]),
+                    )
+
+                with b4:
+                    st.metric(
+                        "Chamadas adicionadas",
+                        actual_delta,
+                    )
+
+                expected = (
+                    "1"
+                    if batch_result["new_ids"]
+                    else "0"
+                )
+
+                if str(actual_delta) == expected:
+                    st.success(
+                        f"🎯 Contagem correta: "
+                        f"{actual_delta} chamada(s) para "
+                        f"{len(batch_result['returned_ids'])} partida(s)."
+                    )
+                else:
+                    st.warning(
+                        "⚠️ A quantidade de chamadas contabilizadas "
+                        f"foi {actual_delta}; esperado: {expected}."
+                    )
+
+                missing = [
+                    key
+                    for key in batch_result["new_ids"]
+                    if key not in batch_result["returned_ids"]
+                ]
+
+                if missing:
+                    st.warning(
+                        "⚠️ A API não devolveu estes IDs: "
+                        + ", ".join(missing)
+                    )
+
+                if batch_result["enriched_ids"]:
+                    st.write(
+                        "🟢 Partidas enriquecidas neste lote: "
+                        + ", ".join(
+                            batch_result["enriched_ids"]
+                        )
+                    )
+
+                if batch_result["already_enriched"]:
+                    st.write(
+                        "💾 Já estavam no cache e não foram consultadas: "
+                        + ", ".join(
+                            batch_result["already_enriched"]
+                        )
+                    )
+
+                after_details = set(
+                    batch_cache.get("details", {}).keys()
+                )
+
+                new_details = sorted(
+                    after_details - before_details
+                )
+
+                st.caption(
+                    "Novos registros adicionados ao `details`: "
+                    f"{len(new_details)}"
+                )
+
+                st.info(
+                    "Agora execute o mesmo bloco novamente. "
+                    "O resultado esperado é: 0 chamadas adicionais."
+                )
+
+        # --------------------------------------------------------
+        # ENRIQUECIMENTO INDIVIDUAL — MANTIDO PARA COMPARAÇÃO
+        # --------------------------------------------------------
 
         if st.button(
             "🟣 Enriquecer somente esta partida",
@@ -2554,7 +2098,6 @@ if fixtures:
             with st.spinner(
                 "Verificando cache e API-Sports..."
             ):
-
                 (
                     details,
                     api_was_called,
@@ -2572,62 +2115,12 @@ if fixtures:
 
             elif api_was_called:
 
-                # ------------------------------------------------
-                # CONFIRMAÇÃO PÓS-GRAVAÇÃO
-                # ------------------------------------------------
-                # Não fazemos rerun imediatamente: o rerun pode esconder
-                # o resultado do teste e dificultar a identificação de uma
-                # falha de persistência. Primeiro relemos o GitHub e
-                # confirmamos que o detail realmente existe.
-                verified_cache, _, verify_error = github_load_cache()
+                st.success(
+                    "Consulta à API-Sports realizada "
+                    "e resultado salvo no GitHub."
+                )
 
-                if verify_error:
-                    st.error(
-                        "⚠️ A API-Sports respondeu, mas não foi possível "
-                        f"confirmar a persistência no GitHub: {verify_error}"
-                    )
-                else:
-                    verified_detail = (
-                        (verified_cache or {})
-                        .get("details", {})
-                        .get(str(selected_fixture_id))
-                    )
-
-                    if verified_detail is None:
-                        st.error(
-                            "❌ A API-Sports foi consultada, mas o "
-                            f"enriquecimento do fixture {selected_fixture_id} "
-                            "não apareceu no cache do GitHub após a gravação. "
-                            "Nenhum rerun será feito para não esconder o erro."
-                        )
-                    else:
-                        # O GitHub confirmou a gravação. Neste ponto o
-                        # cache local já contém o novo detail e o contador
-                        # de quota foi atualizado pela resposta real da
-                        # API-Sports. Porém, os elementos exibidos no topo
-                        # da página foram calculados antes do clique.
-                        #
-                        # Portanto, fazemos um rerun SOMENTE depois da
-                        # confirmação positiva. Assim a tela inteira passa
-                        # imediatamente a mostrar:
-                        #   - consumo 65/35 (ou o valor real retornado);
-                        #   - partida já enriquecida;
-                        #   - nenhuma nova chamada ao abrir novamente.
-                        cache = verified_cache
-                        st.session_state["selected_fixture_id"] = (
-                            selected_fixture_id
-                        )
-                        st.session_state["enrichment_confirmed"] = (
-                            selected_fixture_id
-                        )
-
-                        st.success(
-                            "🟢 Enriquecimento concluído e confirmado no "
-                            "GitHub. Atualizando a tela para refletir "
-                            "imediatamente o novo estado..."
-                        )
-
-                        st.rerun()
+                st.rerun()
 
             else:
 
@@ -2636,21 +2129,16 @@ if fixtures:
                     "Nenhuma chamada à API-Sports foi feita."
                 )
 
+                st.rerun()
+
+
 # ============================================================
 # DIAGNÓSTICO
 # ============================================================
 
 with st.expander(
-    "🔎 Diagnóstico técnico"
+    "🔎 Diagnóstico"
 ):
-
-    st.write(
-        "IDs de campeonatos liberados no filtro:"
-    )
-    st.write(
-        ", ".join(str(x) for x in sorted(ALLOWED_LEAGUE_IDS))
-    )
-
     st.write(
         "O objetivo deste teste é separar três coisas:"
     )
@@ -2671,7 +2159,6 @@ with st.expander(
         "O contador interno registra somente chamadas "
         "à API-Sports feitas pelo próprio app."
     )
-
     st.write(
         "O bloco de consumo real usa os headers de rate limit "
         "da API-Sports e o endpoint `/status` para mostrar "
@@ -2692,7 +2179,6 @@ with st.expander(
         "O aplicativo nunca deve substituir um cache "
         "existente por um cache vazio devido a erro de leitura."
     )
-
     st.write(
         "Antes de cada gravação, o aplicativo relê "
         "o cache atual do GitHub e mescla os dados."
