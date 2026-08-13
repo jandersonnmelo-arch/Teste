@@ -1617,8 +1617,8 @@ if cache.get(
 ):
 
     st.caption(
-        "Última chamada registrada pelo app: "
-        f"{cache['last_api_call']}"
+        "Última chamada registrada pelo app (Brasília): "
+        f"{format_fixture_local_time(cache['last_api_call'])}"
     )
 
 
