@@ -1,6 +1,7 @@
 import base64
 import json
 from datetime import date, datetime, timezone
+from zoneinfo import ZoneInfo
 
 import requests
 import streamlit as st
@@ -17,12 +18,15 @@ st.set_page_config(
 )
 
 BASE_API = "https://v3.football.api-sports.io"
-
 GITHUB_OWNER = "jandersonnmelo-arch"
 GITHUB_REPO = "Teste"
 GITHUB_BRANCH = "main"
 
 GITHUB_FILE = "dados_app/cache.json"
+
+# Fuso oficial da interface e da busca de partidas.
+BRAZIL_TZ = ZoneInfo("America/Sao_Paulo")
+API_TIMEZONE = "America/Sao_Paulo"
 
 
 # ============================================================
@@ -34,7 +38,6 @@ def get_secret(name, default=""):
         return st.secrets.get(name, default)
     except Exception:
         return default
-
 
 API_KEY = (
     get_secret("API_SPORTS_KEY")
@@ -50,8 +53,9 @@ GITHUB_TOKEN = get_secret("GITHUB_TOKEN")
 
 def empty_cache():
     return {
-        "version": 2,
+        "version": 3,
         "api_calls": 0,
+        "api_call_history": [],
         "last_api_call": None,
         "quota": {
             "daily_used": None,
@@ -90,6 +94,12 @@ def normalize_cache(data):
             "api_calls",
             0,
         )
+    )
+
+    cache["api_call_history"] = (
+        list(data.get("api_call_history", []))
+        if isinstance(data.get("api_call_history", []), list)
+        else []
     )
 
     cache["last_api_call"] = data.get(
@@ -153,7 +163,6 @@ def github_file_url():
         f"{GITHUB_OWNER}/{GITHUB_REPO}/contents/"
         f"{GITHUB_FILE}"
     )
-
 
 # ============================================================
 # GITHUB — LEITURA
@@ -258,7 +267,6 @@ def github_load_cache_at_commit(commit_sha):
     """
     if not GITHUB_TOKEN:
         return None, None, "GITHUB_TOKEN não configurado."
-
     try:
         response = requests.get(
             github_file_url(),
@@ -363,7 +371,6 @@ def github_find_historical_detail(fixture_id, max_commits=20):
                 }, None
 
         return None, None
-
     except Exception as e:
         return None, str(e)
 
@@ -384,7 +391,6 @@ def restore_historical_detail(cache, fixture_id, historical):
 
     if not ok:
         return False, save_error
-
     # Sucesso: o chamador usa `restored is True` para
     # confirmar a restauração antes de executar st.rerun().
     return True
@@ -405,7 +411,6 @@ def merge_caches(remote, local):
         date_searches
         fixtures
         details
-
     Em caso de conflito:
         - dados existentes no remoto são preservados;
         - dados novos do local são adicionados;
@@ -426,13 +431,27 @@ def merge_caches(remote, local):
         int(local.get("api_calls", 0)),
     )
 
+    # União do histórico de chamadas, sem duplicar timestamps.
+    history = []
+    seen_history = set()
+
+    for ts in (
+        remote.get("api_call_history", [])
+        + local.get("api_call_history", [])
+    ):
+        if ts and ts not in seen_history:
+            seen_history.add(ts)
+            history.append(ts)
+
+    history.sort()
+    merged["api_call_history"] = history[-500:]
+
     # --------------------------------------------------------
     # QUOTA REAL DA API
     # --------------------------------------------------------
 
     remote_quota = remote.get("quota", {})
     local_quota = local.get("quota", {})
-
     merged_quota = dict(remote_quota)
 
     # O snapshot local de quota vem da resposta mais recente
@@ -600,7 +619,6 @@ def github_save_cache(cache):
     # --------------------------------------------------------
     # PRIMEIRA LEITURA FRESCA
     # --------------------------------------------------------
-
     remote_cache, remote_sha, error = (
         github_load_cache()
     )
@@ -621,7 +639,6 @@ def github_save_cache(cache):
     )
 
     try:
-
         content = json.dumps(
             merged_cache,
             ensure_ascii=False,
@@ -642,7 +659,6 @@ def github_save_cache(cache):
 
         if remote_sha:
             payload["sha"] = remote_sha
-
         response = requests.put(
             github_file_url(),
             headers=github_headers(),
@@ -810,7 +826,6 @@ def api_get(endpoint, params, cache=None):
     }
 
     try:
-
         response = requests.get(
             f"{BASE_API}/{endpoint}",
             headers=headers,
@@ -919,21 +934,70 @@ def api_status(cache):
 # ============================================================
 
 def register_api_call(cache):
+    """
+    Registra exatamente uma chamada HTTP feita pelo app.
+    O consumo diário oficial continua vindo da API-Sports.
+    """
     cache["api_calls"] = (
-        int(
-            cache.get(
-                "api_calls",
-                0,
-            )
-        )
+        int(cache.get("api_calls", 0))
         + 1
     )
 
-    cache["last_api_call"] = (
+    now_utc = (
         datetime.now(timezone.utc)
         .isoformat()
         .replace("+00:00", "Z")
     )
+
+    cache.setdefault("api_call_history", []).append(now_utc)
+    cache["api_call_history"] = cache["api_call_history"][-500:]
+    cache["last_api_call"] = now_utc
+
+
+def local_now():
+    return datetime.now(BRAZIL_TZ)
+
+
+def local_today():
+    return local_now().date()
+
+
+def count_app_calls_today(cache):
+    """Conta chamadas HTTP do app no dia atual de Brasília."""
+    today = local_today().isoformat()
+    total = 0
+
+    for ts in cache.get("api_call_history", []):
+        try:
+            dt = datetime.fromisoformat(
+                str(ts).replace("Z", "+00:00")
+            )
+            if dt.astimezone(BRAZIL_TZ).date().isoformat() == today:
+                total += 1
+        except Exception:
+            continue
+
+    return total
+
+
+def format_fixture_local_time(date_text):
+    """Converte o horário retornado pela API para Brasília."""
+    if not date_text:
+        return "—"
+
+    try:
+        dt = datetime.fromisoformat(
+            str(date_text).replace("Z", "+00:00")
+        )
+
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
+        return dt.astimezone(BRAZIL_TZ).strftime(
+            "%d/%m/%Y %H:%M"
+        )
+    except Exception:
+        return str(date_text)[:16] or "—"
 
 
 # ============================================================
@@ -973,7 +1037,8 @@ def search_fixtures(
     payload, error = api_get(
         "fixtures",
         {
-            "date": key
+            "date": key,
+            "timezone": API_TIMEZONE,
         },
         cache=cache,
     )
@@ -1180,7 +1245,6 @@ def enrich_fixtures_batch(cache, fixture_ids):
         }
 
     ok, save_error = github_save_cache(cache)
-
     if not ok:
         base_result["error"] = save_error
 
@@ -1367,6 +1431,11 @@ st.caption(
     "descoberta, enriquecimento e persistência."
 )
 
+st.caption(
+    f"🕒 Fuso da interface: {API_TIMEZONE} — "
+    f"data atual: {local_today().strftime('%d/%m/%Y')}"
+)
+
 
 # ============================================================
 # CONTROLE DE CONSUMO REAL
@@ -1389,7 +1458,7 @@ q1, q2, q3 = st.columns(3)
 
 with q1:
     st.metric(
-        "Chamadas hoje",
+        "Chamadas hoje (API-Sports)",
         daily_used if daily_used is not None else "—",
     )
 
@@ -1476,12 +1545,17 @@ st.subheader(
     "📊 Controle interno do teste"
 )
 
-c1, c2, c3 = st.columns(3)
+c1, c2, c3, c4 = st.columns(4)
 
 with c1:
-
     st.metric(
-        "Chamadas API-Sports registradas pelo app",
+        "Chamadas do app hoje",
+        count_app_calls_today(cache),
+    )
+
+with c2:
+    st.metric(
+        "Total histórico do app",
         cache.get(
             "api_calls",
             0,
@@ -1489,7 +1563,7 @@ with c1:
     )
 
 
-with c2:
+with c3:
 
     st.metric(
         "Datas armazenadas",
@@ -1502,7 +1576,7 @@ with c2:
     )
 
 
-with c3:
+with c4:
 
     st.metric(
         "Partidas enriquecidas",
@@ -1558,7 +1632,7 @@ st.subheader(
 
 selected_date = st.date_input(
     "Data",
-    value=date.today(),
+    value=local_today(),
 )
 
 
@@ -1633,7 +1707,6 @@ if st.button(
         st.session_state["historical_detail"] = None
         st.session_state["historical_fixture_id"] = None
 
-
 # ============================================================
 # SELEÇÃO DA PARTIDA
 # ============================================================
@@ -1653,7 +1726,6 @@ if fixtures:
     options = []
 
     for item in fixtures:
-
         fixture = item.get(
             "fixture",
             {},
@@ -1695,14 +1767,15 @@ if fixtures:
             "name",
             "Competição desconhecida",
         )
-
         date_text = fixture.get(
             "date",
             "",
         )
 
+        local_time_text = format_fixture_local_time(date_text)
+
         label = (
-            f"{date_text} | "
+            f"{local_time_text} | "
             f"{home} x {away} | "
             f"{league_name} | "
             f"ID {fixture_id}"
@@ -1714,7 +1787,6 @@ if fixtures:
                 fixture_id,
             )
         )
-
     labels = [
         item[0]
         for item in options
@@ -1924,7 +1996,6 @@ if fixtures:
             fixture_id = fixture.get("id")
             if fixture_id is None:
                 continue
-
             home = (
                 teams.get("home", {}) or {}
             ).get("name", "Casa")
@@ -2134,7 +2205,6 @@ if fixtures:
                         "Chamadas adicionadas",
                         actual_delta,
                     )
-
                 expected = (
                     "1"
                     if batch_result["new_ids"]
@@ -2281,7 +2351,6 @@ if fixtures:
                     "O resultado já estava no cache. "
                     "Nenhuma chamada à API-Sports foi feita."
                 )
-
                 st.rerun()
 
 
