@@ -1,16 +1,18 @@
 {
   "version": 2,
-  "api_calls": 0,
-  "last_api_call": null,
+  "api_calls": 1,
+  "last_api_call": "2026-08-13T00:02:09.415715Z",
   "quota": {
     "daily_used": 65,
     "daily_limit": 100,
     "daily_remaining": 35,
     "minute_limit": null,
     "minute_remaining": null,
-    "updated_at": "2026-08-13T00:02:01.654923Z"
+    "updated_at": "2026-08-13T00:02:09.414275Z"
   },
-  "date_searches": {},
+  "date_searches": {
+    "2026-08-11": []
+  },
   "fixtures": {},
   "details": {}
 }
