@@ -6,12 +6,12 @@
   ],
   "last_api_call": "2026-08-13T03:15:32.234421Z",
   "quota": {
-    "daily_used": 17,
+    "daily_used": 15,
     "daily_limit": 100,
-    "daily_remaining": 83,
-    "minute_limit": 10,
-    "minute_remaining": 8,
-    "updated_at": "2026-08-13T03:15:32.234400Z"
+    "daily_remaining": 85,
+    "minute_limit": null,
+    "minute_remaining": null,
+    "updated_at": "2026-08-13T03:15:33.591389Z"
   },
   "date_searches": {
     "2026-08-12": [
@@ -39919,9 +39919,5 @@
       }
     }
   },
-  "details": {},
-  "fd_date_searches": {},
-  "fd_fixtures": {},
-  "fd_details": {},
-  "premium_version": 2
+  "details": {}
 }
