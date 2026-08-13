@@ -1894,24 +1894,136 @@ if fixtures:
         )
 
         # Monta as opções a partir das partidas carregadas.
-        batch_options = [
-            (label, fixture_id)
-            for label, fixture_id in options
+        # --------------------------------------------------------
+        # LISTA CLARA PARA CELULAR
+        # --------------------------------------------------------
+        # Em vez de uma lista longa e cortada, mostramos:
+        # campeonato + horário + status + confronto + ID.
+        # Isso evita selecionar partidas futuras por engano.
+        batch_rows = []
+
+        for item in fixtures:
+            fixture = item.get("fixture", {}) or {}
+            league = item.get("league", {}) or {}
+            teams = item.get("teams", {}) or {}
+
+            fixture_id = fixture.get("id")
+            if fixture_id is None:
+                continue
+            home = (
+                teams.get("home", {}) or {}
+            ).get("name", "Casa")
+
+            away = (
+                teams.get("away", {}) or {}
+            ).get("name", "Fora")
+
+            league_name = league.get(
+                "name",
+                "Competição desconhecida",
+            )
+
+            country = league.get("country", "")
+
+            date_text = fixture.get("date", "")
+            display_time = "—"
+
+            try:
+                if date_text:
+                    parsed_dt = datetime.fromisoformat(
+                        str(date_text).replace("Z", "+00:00")
+                    )
+                    display_time = parsed_dt.strftime("%H:%M")
+            except Exception:
+                display_time = str(date_text)[:16] or "—"
+
+            status = (
+                fixture.get("status", {}) or {}
+            )
+            short_status = status.get("short", "")
+            long_status = status.get("long", "")
+
+            finished_statuses = {
+                "FT", "AET", "PEN", "AWD", "WO"
+            }
+
+            if short_status in finished_statuses:
+                status_label = "✅ FINALIZADO"
+            elif short_status in {"1H", "HT", "2H", "ET", "P"}:
+                status_label = "🟢 AO VIVO"
+            else:
+                status_label = (
+                    f"🕐 {long_status or short_status or 'FUTURO'}"
+                )
+
+            label = (
+                f"{status_label} | "
+                f"🕐 {display_time} | "
+                f"🏆 {league_name}"
+                + (f" ({country})" if country else "")
+                + f" | ⚽ {home} x {away} | "
+                f"ID {fixture_id}"
+            )
+
+            batch_rows.append({
+                "label": label,
+                "fixture_id": fixture_id,
+                "finished": short_status in finished_statuses,
+                "status": short_status,
+                "time": display_time,
+                "league": league_name,
+                "country": country,
+                "home": home,
+                "away": away,
+            })
+
+        # Primeiro mostramos somente partidas já finalizadas.
+        finished_rows = [
+            row for row in batch_rows
+            if row["finished"]
         ]
 
-        batch_labels = [item[0] for item in batch_options]
+        if finished_rows:
+            st.success(
+                f"🟢 {len(finished_rows)} partida(s) finalizada(s) "
+                "disponíveis para o teste."
+            )
+        else:
+            st.warning(
+                "Não encontrei partidas finalizadas nessa data. "
+                "Para validar o enriquecimento estatístico, "
+                "use uma data com partidas já encerradas."
+            )
 
-        default_batch_count = min(10, len(batch_labels))
+        # A seleção padrão pega até 10 partidas finalizadas.
+        selectable_rows = finished_rows
+
+        # Se não houver finalizadas, não pré-selecionamos partidas
+        # futuras. Elas continuam visíveis em uma lista separada.
+        selectable_labels = [
+            row["label"]
+            for row in selectable_rows
+        ]
+
+        default_batch_count = min(
+            10,
+            len(selectable_labels),
+        )
 
         selected_batch_labels = st.multiselect(
-            "Selecione até 10 partidas para o teste",
-            batch_labels,
-            default=batch_labels[:default_batch_count],
+            "Selecione até 10 partidas FINALIZADAS",
+            selectable_labels,
+            default=selectable_labels[:default_batch_count],
             key="batch_fixture_selection",
         )
 
+        label_to_row = {
+            row["label"]: row
+            for row in batch_rows
+        }
+
         selected_batch_ids = [
-            dict(batch_options)[label]
+            label_to_row[label]["fixture_id"]
             for label in selected_batch_labels
         ]
 
@@ -1920,10 +2032,34 @@ if fixtures:
             "máximo recomendado neste teste: 10"
         )
 
+        # Mostra os jogos futuros separadamente, para deixar claro
+        # por que não devemos selecioná-los neste experimento.
+        future_rows = [
+            row for row in batch_rows
+            if not row["finished"]
+            and row["status"] not in {
+                "1H", "HT", "2H", "ET", "P"
+            }
+        ]
+
+        if future_rows:
+            with st.expander(
+                f"🕐 Partidas ainda não finalizadas "
+                f"({len(future_rows)})",
+                expanded=False,
+            ):
+                for row in future_rows[:30]:
+                    st.caption(row["label"])
+
+        if len(selected_batch_ids) > 10:
+            st.error(
+                "Selecione no máximo 10 partidas para este teste."
+            )
+
         if st.button(
             "🚀 Executar 1 chamada para o bloco",
             type="secondary",
-            disabled=not selected_batch_ids,
+            disabled=(not selected_batch_ids or len(selected_batch_ids) > 10),
         ):
             # Leitura fresca antes de gastar a API.
             batch_cache, _, batch_error = github_load_cache()
@@ -1931,6 +2067,7 @@ if fixtures:
             if batch_error:
                 st.error(batch_error)
                 st.stop()
+
             before_calls = int(batch_cache.get("api_calls", 0))
             before_details = set(
                 batch_cache.get("details", {}).keys()
@@ -1982,7 +2119,6 @@ if fixtures:
                         "Chamadas adicionadas",
                         actual_delta,
                     )
-
                 expected = (
                     "1"
                     if batch_result["new_ids"]
@@ -2098,6 +2234,7 @@ if fixtures:
             with st.spinner(
                 "Verificando cache e API-Sports..."
             ):
+
                 (
                     details,
                     api_was_called,
@@ -2128,7 +2265,6 @@ if fixtures:
                     "O resultado já estava no cache. "
                     "Nenhuma chamada à API-Sports foi feita."
                 )
-
                 st.rerun()
 
 
@@ -2139,6 +2275,7 @@ if fixtures:
 with st.expander(
     "🔎 Diagnóstico"
 ):
+
     st.write(
         "O objetivo deste teste é separar três coisas:"
     )
@@ -2159,6 +2296,7 @@ with st.expander(
         "O contador interno registra somente chamadas "
         "à API-Sports feitas pelo próprio app."
     )
+
     st.write(
         "O bloco de consumo real usa os headers de rate limit "
         "da API-Sports e o endpoint `/status` para mostrar "
@@ -2179,6 +2317,7 @@ with st.expander(
         "O aplicativo nunca deve substituir um cache "
         "existente por um cache vazio devido a erro de leitura."
     )
+
     st.write(
         "Antes de cada gravação, o aplicativo relê "
         "o cache atual do GitHub e mescla os dados."
