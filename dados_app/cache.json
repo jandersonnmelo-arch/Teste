@@ -9,9 +9,13 @@
     "daily_remaining": 83,
     "minute_limit": null,
     "minute_remaining": null,
-    "updated_at": "2026-08-13T03:42:27.173199Z"
+    "updated_at": "2026-08-13T03:42:50.534403Z"
   },
   "date_searches": {},
   "fixtures": {},
-  "details": {}
+  "details": {},
+  "fd_date_searches": {},
+  "fd_fixtures": {},
+  "fd_details": {},
+  "premium_version": 2
 }
