@@ -6,12 +6,12 @@
   ],
   "last_api_call": "2026-08-13T03:48:04.253684Z",
   "quota": {
-    "daily_used": 21,
+    "daily_used": 19,
     "daily_limit": 100,
-    "daily_remaining": 79,
+    "daily_remaining": 81,
     "minute_limit": 10,
     "minute_remaining": 8,
-    "updated_at": "2026-08-13T03:48:04.253669Z"
+    "updated_at": "2026-08-13T03:48:25.771467Z"
   },
   "date_searches": {
     "2026-08-12": [
