@@ -123,6 +123,7 @@ def normalize_cache(data):
         cache["fixtures"] = data[
             "fixtures"
         ]
+
     if isinstance(
         data.get("details"),
         dict,
@@ -164,6 +165,7 @@ def github_load_cache():
 
     Retorno:
         cache, sha, erro
+
     IMPORTANTE:
     se houver erro de leitura, NÃO retorna um cache vazio
     para posterior gravação. Isso evita apagar dados.
@@ -226,6 +228,7 @@ def github_load_cache():
         data = json.loads(content)
 
         cache = normalize_cache(data)
+
         return (
             cache,
             obj.get("sha"),
@@ -246,6 +249,7 @@ def github_commits_url():
         f"https://api.github.com/repos/"
         f"{GITHUB_OWNER}/{GITHUB_REPO}/commits"
     )
+
 
 def github_load_cache_at_commit(commit_sha):
     """
@@ -455,6 +459,7 @@ def merge_caches(remote, local):
     local_last = local.get(
         "last_api_call"
     )
+
     if remote_last and local_last:
         if local_last > remote_last:
             merged["last_api_call"] = local_last
@@ -475,6 +480,7 @@ def merge_caches(remote, local):
         "date_searches",
         {},
     )
+
     local_dates = local.get(
         "date_searches",
         {},
@@ -495,6 +501,7 @@ def merge_caches(remote, local):
             and value
         ):
             merged_dates[key] = value
+
     merged["date_searches"] = merged_dates
 
     # --------------------------------------------------------
@@ -536,6 +543,7 @@ def merge_caches(remote, local):
         "details",
         {},
     )
+
     local_details = local.get(
         "details",
         {},
@@ -556,6 +564,7 @@ def merge_caches(remote, local):
         # por None ou estrutura vazia.
         if value is None:
             continue
+
         if not merged_details[key]:
             merged_details[key] = value
 
@@ -618,6 +627,7 @@ def github_save_cache(cache):
             ensure_ascii=False,
             indent=2,
         )
+
         encoded = base64.b64encode(
             content.encode("utf-8")
         ).decode("ascii")
@@ -781,6 +791,12 @@ def api_get(endpoint, params, cache=None):
 
     Além do payload, captura os headers reais de
     rate limit devolvidos pela API.
+
+    IMPORTANTE:
+    toda requisição HTTP que chega à API-Sports é
+    registrada aqui, independentemente de retornar
+    200, 4xx ou 5xx. O endpoint /status continua
+    fora desta função porque é tratado separadamente.
     """
 
     if not API_KEY:
@@ -802,11 +818,15 @@ def api_get(endpoint, params, cache=None):
             timeout=30,
         )
 
+        # Uma única fonte de verdade para o contador interno:
+        # cada chamada HTTP à API-Sports feita pelo app é
+        # registrada exatamente uma vez.
         if cache is not None:
             update_real_quota_from_response(
                 cache,
                 response,
             )
+            register_api_call(cache)
 
         try:
             payload = response.json()
@@ -826,6 +846,7 @@ def api_get(endpoint, params, cache=None):
 
     except Exception as e:
         return None, str(e)
+
 
 def api_status(cache):
     """
@@ -868,6 +889,7 @@ def api_status(cache):
 
         if current is not None:
             quota["daily_used"] = int(current)
+
         if limit_day is not None:
             quota["daily_limit"] = int(limit_day)
 
@@ -968,8 +990,6 @@ def search_fixtures(
         [],
     )
 
-    register_api_call(cache)
-
     cache.setdefault(
         "date_searches",
         {},
@@ -1031,13 +1051,13 @@ def enrich_fixtures_batch(cache, fixture_ids):
         /fixtures?ids=ID1-ID2-ID3...
 
     A API-Sports aceita até 20 IDs por requisição.
-    Cada item retornado é salvo individualmente em `details`,
-    mas a requisição HTTP é contabilizada somente uma vez.
+    Cada item retornado é salvo individualmente em `details`.
 
-    Partidas que já possuem `details` não entram no pedido.
+    A função também preserva metadados do retorno (`results`, `errors`
+    e o parâmetro `ids`) para diagnosticar casos em que a API responde
+    HTTP 200, mas retorna zero partidas.
     """
 
-    # Normaliza IDs, remove duplicados e ignora valores vazios.
     normalized_ids = []
     seen = set()
 
@@ -1053,31 +1073,28 @@ def enrich_fixtures_batch(cache, fixture_ids):
         seen.add(key)
         normalized_ids.append(key)
 
-    if not normalized_ids:
-        return {
-            "requested_ids": [],
-            "already_enriched": [],
-            "new_ids": [],
-            "returned_ids": [],
-            "enriched_ids": [],
-            "api_was_called": False,
-            "error": None,
-        }
+    base_result = {
+        "requested_ids": normalized_ids,
+        "already_enriched": [],
+        "new_ids": [],
+        "returned_ids": [],
+        "enriched_ids": [],
+        "api_was_called": False,
+        "api_results": None,
+        "api_errors": {},
+        "ids_param": None,
+        "error": None,
+    }
 
-    # O endpoint permite no máximo 20 IDs por requisição.
+    if not normalized_ids:
+        return base_result
+
     if len(normalized_ids) > 20:
-        return {
-            "requested_ids": normalized_ids,
-            "already_enriched": [],
-            "new_ids": [],
-            "returned_ids": [],
-            "enriched_ids": [],
-            "api_was_called": False,
-            "error": (
-                "O teste em lote aceita no máximo 20 partidas "
-                "por chamada. Selecione até 20 fixture IDs."
-            ),
-        }
+        base_result["error"] = (
+            "O teste em lote aceita no máximo 20 partidas "
+            "por chamada. Selecione até 20 fixture IDs."
+        )
+        return base_result
 
     details_cache = cache.setdefault("details", {})
 
@@ -1091,20 +1108,16 @@ def enrich_fixtures_batch(cache, fixture_ids):
         if key not in already_enriched
     ]
 
-    # Nada novo para consultar.
-    if not new_ids:
-        return {
-            "requested_ids": normalized_ids,
-            "already_enriched": already_enriched,
-            "new_ids": [],
-            "returned_ids": [],
-            "enriched_ids": [],
-            "api_was_called": False,
-            "error": None,
-        }
+    base_result["already_enriched"] = already_enriched
+    base_result["new_ids"] = new_ids
 
-    # UMA única requisição para todos os IDs novos.
+    if not new_ids:
+        return base_result
+
+    # A documentação oficial usa exatamente este formato:
+    # /fixtures?ids=ID1-ID2-ID3
     ids_param = "-".join(new_ids)
+    base_result["ids_param"] = ids_param
 
     payload, error = api_get(
         "fixtures",
@@ -1114,21 +1127,22 @@ def enrich_fixtures_batch(cache, fixture_ids):
         cache=cache,
     )
 
+    # Se api_get recebeu uma resposta HTTP, a chamada já foi registrada
+    # pelo próprio api_get. Em caso de erro de rede, não presumimos que
+    # a API tenha recebido a requisição.
     if error:
-        return {
-            "requested_ids": normalized_ids,
-            "already_enriched": already_enriched,
-            "new_ids": new_ids,
-            "returned_ids": [],
-            "enriched_ids": [],
-            "api_was_called": False,
-            "error": error,
-        }
+        base_result["api_was_called"] = False
+        base_result["error"] = error
+        github_save_cache(cache)
+        return base_result
 
-    response = payload.get("response", [])
+    base_result["api_was_called"] = True
+    api_errors = payload.get("errors") or {}
+    api_results = payload.get("results")
+    response = payload.get("response") or []
 
-    # UMA chamada HTTP real => +1 no contador interno.
-    register_api_call(cache)
+    base_result["api_errors"] = api_errors
+    base_result["api_results"] = api_results
 
     returned_ids = []
     enriched_ids = []
@@ -1145,37 +1159,32 @@ def enrich_fixtures_batch(cache, fixture_ids):
 
         details_cache[key] = {
             "response": [item],
-            "errors": payload.get("errors", {}),
+            "errors": api_errors,
             "empty": False,
             "batch": True,
         }
 
         enriched_ids.append(key)
 
-    # Se a API não devolveu um dos IDs solicitados, não marcamos
-    # esse jogo como enriquecido. Isso permite tentar novamente depois.
+    base_result["returned_ids"] = returned_ids
+    base_result["enriched_ids"] = enriched_ids
+
+    # HTTP 200 + errors da própria API é um retorno diagnóstico,
+    # não um enriquecimento válido. Persistimos o contador/quota,
+    # mas não criamos detalhes falsos.
+    if api_errors:
+        base_result["error"] = {
+            "api_errors": api_errors,
+            "results": api_results,
+            "ids": ids_param,
+        }
+
     ok, save_error = github_save_cache(cache)
 
     if not ok:
-        return {
-            "requested_ids": normalized_ids,
-            "already_enriched": already_enriched,
-            "new_ids": new_ids,
-            "returned_ids": returned_ids,
-            "enriched_ids": enriched_ids,
-            "api_was_called": True,
-            "error": save_error,
-        }
+        base_result["error"] = save_error
 
-    return {
-        "requested_ids": normalized_ids,
-        "already_enriched": already_enriched,
-        "new_ids": new_ids,
-        "returned_ids": returned_ids,
-        "enriched_ids": enriched_ids,
-        "api_was_called": True,
-        "error": None,
-    }
+    return base_result
 
 
 # ============================================================
@@ -1232,8 +1241,6 @@ def enrich_fixture(
         [],
     )
 
-    register_api_call(cache)
-
     if not response:
 
         cache.setdefault(
@@ -1287,6 +1294,7 @@ def enrich_fixture(
 # ============================================================
 # CARREGAMENTO INICIAL
 # ============================================================
+
 if not API_KEY:
     st.error(
         "Configure o Secret API_SPORTS_KEY "
@@ -1349,6 +1357,7 @@ if "historical_fixture_id" not in st.session_state:
 # ============================================================
 # INTERFACE
 # ============================================================
+
 st.title(
     "🟣 Teste limpo — API-SPORTS"
 )
@@ -1516,6 +1525,7 @@ with st.expander("ℹ️ Estado do cache", expanded=False):
         "O consumo real diário e por minuto vem dos "
         "limites informados pela própria API-Sports."
     )
+
     st.write(
         "Uma partida só conta como enriquecida quando existe "
         "um registro não vazio em `details`."
@@ -1536,6 +1546,7 @@ if cache.get(
         "Última chamada registrada pelo app: "
         f"{cache['last_api_call']}"
     )
+
 
 # ============================================================
 # BUSCAR PARTIDAS
@@ -1640,6 +1651,7 @@ if fixtures:
     )
 
     options = []
+
     for item in fixtures:
 
         fixture = item.get(
@@ -1660,6 +1672,7 @@ if fixtures:
         fixture_id = fixture.get(
             "id"
         )
+
         home = (
             teams
             .get("home", {})
@@ -1701,6 +1714,7 @@ if fixtures:
                 fixture_id,
             )
         )
+
     labels = [
         item[0]
         for item in options
@@ -1910,6 +1924,7 @@ if fixtures:
             fixture_id = fixture.get("id")
             if fixture_id is None:
                 continue
+
             home = (
                 teams.get("home", {}) or {}
             ).get("name", "Casa")
@@ -2119,6 +2134,7 @@ if fixtures:
                         "Chamadas adicionadas",
                         actual_delta,
                     )
+
                 expected = (
                     "1"
                     if batch_result["new_ids"]
@@ -2265,6 +2281,7 @@ if fixtures:
                     "O resultado já estava no cache. "
                     "Nenhuma chamada à API-Sports foi feita."
                 )
+
                 st.rerun()
 
 
