@@ -4,12 +4,12 @@
   "api_call_history": [],
   "last_api_call": null,
   "quota": {
-    "daily_used": 5,
+    "daily_used": 8,
     "daily_limit": 100,
-    "daily_remaining": 95,
+    "daily_remaining": 92,
     "minute_limit": null,
     "minute_remaining": null,
-    "updated_at": "2026-08-14T20:44:36.201446Z"
+    "updated_at": "2026-08-14T20:44:41.065638Z"
   },
   "date_searches": {},
   "fixtures": {},
