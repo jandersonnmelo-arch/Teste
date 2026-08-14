@@ -30550,6 +30550,76 @@
           "status": "FT"
         }
       ]
+    },
+    "133": {
+      "time_id": 133,
+      "nome": "Vasco DA Gama",
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "adversario": "Olimpia",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {
+            "Shots on Goal": 7,
+            "Shots off Goal": 11,
+            "Total Shots": 21,
+            "Blocked Shots": 3,
+            "Shots insidebox": 15,
+            "Shots outsidebox": 6,
+            "Fouls": 4,
+            "Corner Kicks": 11,
+            "Offsides": null,
+            "Ball Possession": "75%",
+            "Yellow Cards": 2,
+            "Red Cards": null,
+            "Goalkeeper Saves": 0,
+            "Total passes": 610,
+            "Passes accurate": 546,
+            "Passes %": "90%",
+            "expected_goals": "2.17",
+            "goals_prevented": "0.55"
+          },
+          "data": "2026-08-13T22:00:00+00:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1182": {
+      "time_id": 1182,
+      "nome": "Olimpia",
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "adversario": "Vasco DA Gama",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {
+            "Shots on Goal": 0,
+            "Shots off Goal": 2,
+            "Total Shots": 2,
+            "Blocked Shots": 0,
+            "Shots insidebox": 1,
+            "Shots outsidebox": 1,
+            "Fouls": 8,
+            "Corner Kicks": 0,
+            "Offsides": null,
+            "Ball Possession": "25%",
+            "Yellow Cards": 2,
+            "Red Cards": null,
+            "Goalkeeper Saves": 7,
+            "Total passes": 219,
+            "Passes accurate": 124,
+            "Passes %": "57%",
+            "expected_goals": "0.05",
+            "goals_prevented": "0.55"
+          },
+          "data": "2026-08-13T22:00:00+00:00",
+          "status": "FT"
+        }
+      ]
     }
   },
   "historico_jogadores": {
@@ -33649,6 +33719,3226 @@
             "games": {
               "minutes": null,
               "number": 7,
+              "position": "F",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "41169": {
+      "jogador_id": 41169,
+      "nome": "Léo Jardim",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 1,
+              "position": "G",
+              "rating": "6.7",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 19,
+              "key": null,
+              "accuracy": "19"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": 0
+            }
+          }
+        }
+      ]
+    },
+    "51426": {
+      "jogador_id": 51426,
+      "nome": "Puma Rodríguez",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 2,
+              "position": "D",
+              "rating": "6.9",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 4,
+              "on": 2
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 56,
+              "key": null,
+              "accuracy": "42"
+            },
+            "tackles": {
+              "total": 1,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 12,
+              "won": 7
+            },
+            "dribbles": {
+              "attempts": 2,
+              "success": 1,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "310774": {
+      "jogador_id": 310774,
+      "nome": "Alan Saldivia",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 4,
+              "position": "D",
+              "rating": "7.9",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 85,
+              "key": null,
+              "accuracy": "79"
+            },
+            "tackles": {
+              "total": 6,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 13,
+              "won": 11
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "359372": {
+      "jogador_id": 359372,
+      "nome": "Robert Renan",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 30,
+              "position": "D",
+              "rating": "8.2",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 104,
+              "key": 2,
+              "accuracy": "94"
+            },
+            "tackles": {
+              "total": 2,
+              "blocks": null,
+              "interceptions": 1
+            },
+            "duels": {
+              "total": 11,
+              "won": 9
+            },
+            "dribbles": {
+              "attempts": 1,
+              "success": 1,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "353034": {
+      "jogador_id": 353034,
+      "nome": "Cuiabano",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 67,
+              "number": 66,
+              "position": "D",
+              "rating": "7.5",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 1,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 42,
+              "key": 2,
+              "accuracy": "37"
+            },
+            "tackles": {
+              "total": 1,
+              "blocks": null,
+              "interceptions": 2
+            },
+            "duels": {
+              "total": 7,
+              "won": 5
+            },
+            "dribbles": {
+              "attempts": 3,
+              "success": 1,
+              "past": null
+            },
+            "fouls": {
+              "drawn": 2,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "351920": {
+      "jogador_id": 351920,
+      "nome": "Johan Rojas",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 10,
+              "position": "M",
+              "rating": "6.9",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 2,
+              "on": 1
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 51,
+              "key": 3,
+              "accuracy": "51"
+            },
+            "tackles": {
+              "total": 1,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 5,
+              "won": 1
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": 1
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 1,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "404753": {
+      "jogador_id": 404753,
+      "nome": "Cauan Barros",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 88,
+              "position": "M",
+              "rating": "7",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 1,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 67,
+              "key": null,
+              "accuracy": "64"
+            },
+            "tackles": {
+              "total": 1,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 8,
+              "won": 4
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": 1,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "22232": {
+      "jogador_id": 22232,
+      "nome": "Thiago Mendes",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 67,
+              "number": 23,
+              "position": "M",
+              "rating": "7.3",
+              "captain": true,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 42,
+              "key": 4,
+              "accuracy": "40"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 10,
+              "won": 5
+            },
+            "dribbles": {
+              "attempts": 4,
+              "success": 2,
+              "past": null
+            },
+            "fouls": {
+              "drawn": 3,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 1,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "306261": {
+      "jogador_id": 306261,
+      "nome": "Adson",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 57,
+              "number": 28,
+              "position": "F",
+              "rating": "6.9",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 1,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 38,
+              "key": 1,
+              "accuracy": "31"
+            },
+            "tackles": {
+              "total": 1,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 8,
+              "won": 4
+            },
+            "dribbles": {
+              "attempts": 5,
+              "success": 3,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "10105": {
+      "jogador_id": 10105,
+      "nome": "David",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 84,
+              "number": 7,
+              "position": "F",
+              "rating": "6.3",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 4,
+              "on": 1
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 27,
+              "key": 1,
+              "accuracy": "23"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 6,
+              "won": 2
+            },
+            "dribbles": {
+              "attempts": 1,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "163260": {
+      "jogador_id": 163260,
+      "nome": "Nuno Moreira",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 57,
+              "number": 17,
+              "position": "F",
+              "rating": "6.6",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 1,
+              "on": 1
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 30,
+              "key": null,
+              "accuracy": "25"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": 1
+            },
+            "duels": {
+              "total": 3,
+              "won": 2
+            },
+            "dribbles": {
+              "attempts": 2,
+              "success": 1,
+              "past": null
+            },
+            "fouls": {
+              "drawn": 1,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "64134": {
+      "jogador_id": 64134,
+      "nome": "Marino Hinestroza",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 33,
+              "number": 18,
+              "position": "F",
+              "rating": "6.6",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": 1,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 11,
+              "key": 1,
+              "accuracy": "9"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 7,
+              "won": 4
+            },
+            "dribbles": {
+              "attempts": 5,
+              "success": 4,
+              "past": 1
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "6735": {
+      "jogador_id": 6735,
+      "nome": "Claudio Spinelli",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 33,
+              "number": 77,
+              "position": "F",
+              "rating": "6.5",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": 2,
+              "on": 1
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 1,
+              "key": null,
+              "accuracy": "1"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 2,
+              "won": 1
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": 1,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "10234": {
+      "jogador_id": 10234,
+      "nome": "Lucas Piton",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 23,
+              "number": 6,
+              "position": "D",
+              "rating": "6.6",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 15,
+              "key": 2,
+              "accuracy": "12"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 2,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "614200": {
+      "jogador_id": 614200,
+      "nome": "Ramon Rique",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 23,
+              "number": 83,
+              "position": "M",
+              "rating": "6.6",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 15,
+              "key": null,
+              "accuracy": "13"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 3,
+              "won": 2
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "454458": {
+      "jogador_id": 454458,
+      "nome": "Lukas Zuccarello",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": 11,
+              "number": 86,
+              "position": "M",
+              "rating": "6.3",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": 1,
+              "on": 1
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 7,
+              "key": null,
+              "accuracy": "6"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 1,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "763": {
+      "jogador_id": 763,
+      "nome": "Daniel Fuzato",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 13,
+              "position": "G",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "286962": {
+      "jogador_id": 286962,
+      "nome": "Lucas Freitas",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 43,
+              "position": "D",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "505408": {
+      "jogador_id": 505408,
+      "nome": "Riquelme Avellar",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 82,
+              "position": "D",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "588652": {
+      "jogador_id": 588652,
+      "nome": "Bruno André Azevedo Ribeiro",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 80,
+              "position": "D",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "133910": {
+      "jogador_id": 133910,
+      "nome": "Paulo Henrique",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 96,
+              "position": "D",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "606272": {
+      "jogador_id": 606272,
+      "nome": "Samuel Jesus",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 67,
+              "position": "M",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "9958": {
+      "jogador_id": 9958,
+      "nome": "Tchê Tchê",
+      "time": {
+        "id": 133,
+        "nome": "Vasco DA Gama"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Vasco DA Gama",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 3,
+              "position": "M",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "51733": {
+      "jogador_id": 51733,
+      "nome": "Gastón Olveira",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 1,
+              "position": "G",
+              "rating": "8.2",
+              "captain": true,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": 7
+            },
+            "passes": {
+              "total": 31,
+              "key": null,
+              "accuracy": "14"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": 0
+            }
+          }
+        }
+      ]
+    },
+    "10551": {
+      "jogador_id": 10551,
+      "nome": "Raúl Cáceres",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 27,
+              "position": "D",
+              "rating": "7.2",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 16,
+              "key": 1,
+              "accuracy": "12"
+            },
+            "tackles": {
+              "total": 2,
+              "blocks": null,
+              "interceptions": 2
+            },
+            "duels": {
+              "total": 3,
+              "won": 2
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "51418": {
+      "jogador_id": 51418,
+      "nome": "Brayan Bentaberry",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 2,
+              "position": "D",
+              "rating": "7.3",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 1,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 18,
+              "key": null,
+              "accuracy": "12"
+            },
+            "tackles": {
+              "total": 2,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 4,
+              "won": 4
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "69142": {
+      "jogador_id": 69142,
+      "nome": "Mateo Gamarra",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 15,
+              "position": "D",
+              "rating": "7.2",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 25,
+              "key": null,
+              "accuracy": "15"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": 1,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 8,
+              "won": 6
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "353975": {
+      "jogador_id": 353975,
+      "nome": "Esteban Matus",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 23,
+              "position": "D",
+              "rating": "7",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 19,
+              "key": null,
+              "accuracy": "5"
+            },
+            "tackles": {
+              "total": 3,
+              "blocks": 1,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 7,
+              "won": 4
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": 2
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "70473": {
+      "jogador_id": 70473,
+      "nome": "Richard Sánchez",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 86,
+              "number": 26,
+              "position": "M",
+              "rating": "6.3",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 23,
+              "key": null,
+              "accuracy": "15"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": 1,
+              "interceptions": 2
+            },
+            "duels": {
+              "total": 6,
+              "won": 1
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": 3
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "460070": {
+      "jogador_id": 460070,
+      "nome": "Eduardo Delmas",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 86,
+              "number": 20,
+              "position": "M",
+              "rating": "6.2",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 20,
+              "key": null,
+              "accuracy": "13"
+            },
+            "tackles": {
+              "total": 1,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 8,
+              "won": 1
+            },
+            "dribbles": {
+              "attempts": 1,
+              "success": null,
+              "past": 2
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": 2
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "70771": {
+      "jogador_id": 70771,
+      "nome": "Fernando Cardozo",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 90,
+              "number": 7,
+              "position": "M",
+              "rating": "6.9",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 25,
+              "key": null,
+              "accuracy": "17"
+            },
+            "tackles": {
+              "total": 2,
+              "blocks": null,
+              "interceptions": 1
+            },
+            "duels": {
+              "total": 9,
+              "won": 5
+            },
+            "dribbles": {
+              "attempts": 1,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": 1,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 1,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "319569": {
+      "jogador_id": 319569,
+      "nome": "Sebastián Quintana",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 55,
+              "number": 18,
+              "position": "M",
+              "rating": "6.6",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 5,
+              "key": null,
+              "accuracy": "2"
+            },
+            "tackles": {
+              "total": 3,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 9,
+              "won": 4
+            },
+            "dribbles": {
+              "attempts": 1,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": 1,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "279785": {
+      "jogador_id": 279785,
+      "nome": "Romeo Benítez",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 64,
+              "number": 37,
+              "position": "M",
+              "rating": "6.5",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": 1,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 4,
+              "key": null,
+              "accuracy": "1"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 10,
+              "won": 3
+            },
+            "dribbles": {
+              "attempts": 3,
+              "success": 1,
+              "past": 3
+            },
+            "fouls": {
+              "drawn": 2,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "10149": {
+      "jogador_id": 10149,
+      "nome": "Braian Romero",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 64,
+              "number": 31,
+              "position": "F",
+              "rating": "6.2",
+              "captain": false,
+              "substitute": false
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 5,
+              "key": null,
+              "accuracy": "2"
+            },
+            "tackles": {
+              "total": 1,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 6,
+              "won": 1
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "390741": {
+      "jogador_id": 390741,
+      "nome": "Franco Alfonso",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 35,
+              "number": 35,
+              "position": "F",
+              "rating": "6.2",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 11,
+              "key": null,
+              "accuracy": "8"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 11,
+              "won": 2
+            },
+            "dribbles": {
+              "attempts": 2,
+              "success": 1,
+              "past": 3
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 1,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "377174": {
+      "jogador_id": 377174,
+      "nome": "Rubén Lezcano",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 26,
+              "number": 19,
+              "position": "M",
+              "rating": "6.3",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 1,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 2,
+              "won": 1
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "406562": {
+      "jogador_id": 406562,
+      "nome": "Tiago Caballero",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 26,
+              "number": 24,
+              "position": "F",
+              "rating": "6.7",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 9,
+              "key": null,
+              "accuracy": "5"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 13,
+              "won": 6
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": 1
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "70564": {
+      "jogador_id": 70564,
+      "nome": "Alan Rodríguez",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 9,
+              "number": 30,
+              "position": "D",
+              "rating": "6.6",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 2,
+              "key": null,
+              "accuracy": "1"
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "70472": {
+      "jogador_id": 70472,
+      "nome": "Richard Ortiz",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": 9,
+              "number": 6,
+              "position": "M",
+              "rating": "6.7",
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": 0,
+              "saves": null
+            },
+            "passes": {
+              "total": 5,
+              "key": null,
+              "accuracy": "2"
+            },
+            "tackles": {
+              "total": 1,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": 2,
+              "won": 1
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "51533": {
+      "jogador_id": 51533,
+      "nome": "Sebastián Lentinelly",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 25,
+              "position": "G",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "278380": {
+      "jogador_id": 278380,
+      "nome": "Gustavo Vargas",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 14,
+              "position": "D",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "5862": {
+      "jogador_id": 5862,
+      "nome": "Juan Vera",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 22,
+              "position": "D",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "94346": {
+      "jogador_id": 94346,
+      "nome": "Tim Payne",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 4,
+              "position": "D",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "474846": {
+      "jogador_id": 474846,
+      "nome": "Pedro Zarza",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 17,
+              "position": "F",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "95273": {
+      "jogador_id": 95273,
+      "nome": "Hugo Sandoval",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 9,
+              "position": "F",
+              "rating": null,
+              "captain": false,
+              "substitute": true
+            },
+            "offsides": null,
+            "shots": {
+              "total": null,
+              "on": null
+            },
+            "goals": {
+              "total": null,
+              "conceded": 0,
+              "assists": null,
+              "saves": null
+            },
+            "passes": {
+              "total": null,
+              "key": null,
+              "accuracy": null
+            },
+            "tackles": {
+              "total": null,
+              "blocks": null,
+              "interceptions": null
+            },
+            "duels": {
+              "total": null,
+              "won": null
+            },
+            "dribbles": {
+              "attempts": null,
+              "success": null,
+              "past": null
+            },
+            "fouls": {
+              "drawn": null,
+              "committed": null
+            },
+            "cards": {
+              "yellow": 0,
+              "red": 0
+            },
+            "penalty": {
+              "won": null,
+              "commited": null,
+              "scored": 0,
+              "missed": 0,
+              "saved": null
+            }
+          }
+        }
+      ]
+    },
+    "35954": {
+      "jogador_id": 35954,
+      "nome": "Sebastián Ferreira",
+      "time": {
+        "id": 1182,
+        "nome": "Olimpia"
+      },
+      "jogos": [
+        {
+          "partida_id": "1607199",
+          "data": "2026-08-13T22:00:00+00:00",
+          "time": "Olimpia",
+          "estatisticas": {
+            "games": {
+              "minutes": null,
+              "number": 11,
               "position": "F",
               "rating": null,
               "captain": false,
