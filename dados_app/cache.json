@@ -30620,6 +30620,3366 @@
           "status": "FT"
         }
       ]
+    },
+    "19008": {
+      "time_id": 19008,
+      "nome": "Central Coast",
+      "jogos": [
+        {
+          "partida_id": "1526952",
+          "adversario": "Vénus",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T00:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "10161": {
+      "time_id": 10161,
+      "nome": "Vénus",
+      "jogos": [
+        {
+          "partida_id": "1526952",
+          "adversario": "Central Coast",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T00:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4302": {
+      "time_id": 4302,
+      "nome": "FAS",
+      "jogos": [
+        {
+          "partida_id": "1548356",
+          "adversario": "Verdes",
+          "mandante": true,
+          "gols_feitos": 4,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T00:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "5475": {
+      "time_id": 5475,
+      "nome": "Verdes",
+      "jogos": [
+        {
+          "partida_id": "1548356",
+          "adversario": "FAS",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T00:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "21604": {
+      "time_id": 21604,
+      "nome": "George Telegraph",
+      "jogos": [
+        {
+          "partida_id": "1623062",
+          "adversario": "United Kolkata",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 7,
+          "estatisticas": {},
+          "data": "2026-08-13T06:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "26118": {
+      "time_id": 26118,
+      "nome": "United Kolkata",
+      "jogos": [
+        {
+          "partida_id": "1623062",
+          "adversario": "George Telegraph",
+          "mandante": false,
+          "gols_feitos": 7,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T06:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "21597": {
+      "time_id": 21597,
+      "nome": "BSS Sporting",
+      "jogos": [
+        {
+          "partida_id": "1623063",
+          "adversario": "Kidderpore",
+          "mandante": true,
+          "gols_feitos": 5,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T06:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "21606": {
+      "time_id": 21606,
+      "nome": "Kidderpore",
+      "jogos": [
+        {
+          "partida_id": "1623063",
+          "adversario": "BSS Sporting",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 5,
+          "estatisticas": {},
+          "data": "2026-08-13T06:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "28010": {
+      "time_id": 28010,
+      "nome": "Bidhannagar",
+      "jogos": [
+        {
+          "partida_id": "1623064",
+          "adversario": "Mohun Bagan",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T06:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3467": {
+      "time_id": 3467,
+      "nome": "Mohun Bagan",
+      "jogos": [
+        {
+          "partida_id": "1623064",
+          "adversario": "Bidhannagar",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T06:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27417": {
+      "time_id": 27417,
+      "nome": "Lyn U19",
+      "jogos": [
+        {
+          "partida_id": "1546425",
+          "adversario": "Viking U19",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T08:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "16567": {
+      "time_id": 16567,
+      "nome": "Viking U19",
+      "jogos": [
+        {
+          "partida_id": "1546425",
+          "adversario": "Lyn U19",
+          "mandante": false,
+          "gols_feitos": 4,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T08:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4556": {
+      "time_id": 4556,
+      "nome": "Sport Academy Kairat",
+      "jogos": [
+        {
+          "partida_id": "1534824",
+          "adversario": "Akademiya Ontustik",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T09:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4545": {
+      "time_id": 4545,
+      "nome": "Akademiya Ontustik",
+      "jogos": [
+        {
+          "partida_id": "1534824",
+          "adversario": "Sport Academy Kairat",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T09:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "6281": {
+      "time_id": 6281,
+      "nome": "Lernayin Artsakh",
+      "jogos": [
+        {
+          "partida_id": "1605046",
+          "adversario": "Ararat-Armenia II",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T09:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3689": {
+      "time_id": 3689,
+      "nome": "Ararat-Armenia II",
+      "jogos": [
+        {
+          "partida_id": "1605046",
+          "adversario": "Lernayin Artsakh",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T09:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27987": {
+      "time_id": 27987,
+      "nome": "Olympia Yerevan",
+      "jogos": [
+        {
+          "partida_id": "1605048",
+          "adversario": "Sardarapat 2",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T09:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27992": {
+      "time_id": 27992,
+      "nome": "Sardarapat 2",
+      "jogos": [
+        {
+          "partida_id": "1605048",
+          "adversario": "Olympia Yerevan",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T09:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "14857": {
+      "time_id": 14857,
+      "nome": "Didube 2014",
+      "jogos": [
+        {
+          "partida_id": "1507402",
+          "adversario": "Betlemi",
+          "mandante": true,
+          "gols_feitos": 5,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T10:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "13860": {
+      "time_id": 13860,
+      "nome": "Betlemi",
+      "jogos": [
+        {
+          "partida_id": "1507402",
+          "adversario": "Didube 2014",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 5,
+          "estatisticas": {},
+          "data": "2026-08-13T10:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3508": {
+      "time_id": 3508,
+      "nome": "Merani Tbilisi",
+      "jogos": [
+        {
+          "partida_id": "1507406",
+          "adversario": "Guria",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 5,
+          "estatisticas": {},
+          "data": "2026-08-13T10:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3506": {
+      "time_id": 3506,
+      "nome": "Guria",
+      "jogos": [
+        {
+          "partida_id": "1507406",
+          "adversario": "Merani Tbilisi",
+          "mandante": false,
+          "gols_feitos": 5,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T10:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "16507": {
+      "time_id": 16507,
+      "nome": "Irao",
+      "jogos": [
+        {
+          "partida_id": "1507407",
+          "adversario": "Gardabani",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T10:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "13851": {
+      "time_id": 13851,
+      "nome": "Gardabani",
+      "jogos": [
+        {
+          "partida_id": "1507407",
+          "adversario": "Irao",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T10:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4546": {
+      "time_id": 4546,
+      "nome": "Aktobe Jas",
+      "jogos": [
+        {
+          "partida_id": "1534821",
+          "adversario": "Shakhter Karagandy",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 6,
+          "estatisticas": {},
+          "data": "2026-08-13T10:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4566": {
+      "time_id": 4566,
+      "nome": "Shakhter Karagandy",
+      "jogos": [
+        {
+          "partida_id": "1534821",
+          "adversario": "Aktobe Jas",
+          "mandante": false,
+          "gols_feitos": 6,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T10:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "14863": {
+      "time_id": 14863,
+      "nome": "Saburtalo II",
+      "jogos": [
+        {
+          "partida_id": "1507405",
+          "adversario": "Lokomotivi Tbilisi",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T10:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3500": {
+      "time_id": 3500,
+      "nome": "Lokomotivi Tbilisi",
+      "jogos": [
+        {
+          "partida_id": "1507405",
+          "adversario": "Saburtalo II",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T10:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "13865": {
+      "time_id": 13865,
+      "nome": "Dinamo Tbilisi II",
+      "jogos": [
+        {
+          "partida_id": "1507403",
+          "adversario": "Iberia 2010",
+          "mandante": true,
+          "gols_feitos": 4,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "16505": {
+      "time_id": 16505,
+      "nome": "Iberia 2010",
+      "jogos": [
+        {
+          "partida_id": "1507403",
+          "adversario": "Dinamo Tbilisi II",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4209": {
+      "time_id": 4209,
+      "nome": "Andijan",
+      "jogos": [
+        {
+          "partida_id": "1516097",
+          "adversario": "Neftchi",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4217": {
+      "time_id": 4217,
+      "nome": "Neftchi",
+      "jogos": [
+        {
+          "partida_id": "1516097",
+          "adversario": "Andijan",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4225": {
+      "time_id": 4225,
+      "nome": "Surkhon",
+      "jogos": [
+        {
+          "partida_id": "1516104",
+          "adversario": "Sogdiana",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4223": {
+      "time_id": 4223,
+      "nome": "Sogdiana",
+      "jogos": [
+        {
+          "partida_id": "1516104",
+          "adversario": "Surkhon",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4548": {
+      "time_id": 4548,
+      "nome": "Astana II",
+      "jogos": [
+        {
+          "partida_id": "1534823",
+          "adversario": "Tobol 2",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27634": {
+      "time_id": 27634,
+      "nome": "Tobol 2",
+      "jogos": [
+        {
+          "partida_id": "1534823",
+          "adversario": "Astana II",
+          "mandante": false,
+          "gols_feitos": 4,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2002": {
+      "time_id": 2002,
+      "nome": "Spartak Nalchik",
+      "jogos": [
+        {
+          "partida_id": "1560916",
+          "adversario": "Alaniya Vladikavkaz",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "6787": {
+      "time_id": 6787,
+      "nome": "Alaniya Vladikavkaz",
+      "jogos": [
+        {
+          "partida_id": "1560916",
+          "adversario": "Spartak Nalchik",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T11:00:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "18973": {
+      "time_id": 18973,
+      "nome": "Gonio",
+      "jogos": [
+        {
+          "partida_id": "1507404",
+          "adversario": "Iveria Khashuri",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T12:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27370": {
+      "time_id": 27370,
+      "nome": "Iveria Khashuri",
+      "jogos": [
+        {
+          "partida_id": "1507404",
+          "adversario": "Gonio",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T12:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2276": {
+      "time_id": 2276,
+      "nome": "FC Urartu",
+      "jogos": [
+        {
+          "partida_id": "1581501",
+          "adversario": "Syunik",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T12:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "20087": {
+      "time_id": 20087,
+      "nome": "Syunik",
+      "jogos": [
+        {
+          "partida_id": "1581501",
+          "adversario": "FC Urartu",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T12:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2259": {
+      "time_id": 2259,
+      "nome": "FK Tobol Kostanay",
+      "jogos": [
+        {
+          "partida_id": "1607627",
+          "adversario": "FK Partizan",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T12:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "573": {
+      "time_id": 573,
+      "nome": "FK Partizan",
+      "jogos": [
+        {
+          "partida_id": "1607627",
+          "adversario": "FK Tobol Kostanay",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T12:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4211": {
+      "time_id": 4211,
+      "nome": "Buxoro",
+      "jogos": [
+        {
+          "partida_id": "1516098",
+          "adversario": "Olmaliq",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T12:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4219": {
+      "time_id": 4219,
+      "nome": "Olmaliq",
+      "jogos": [
+        {
+          "partida_id": "1516098",
+          "adversario": "Buxoro",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T12:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "13508": {
+      "time_id": 13508,
+      "nome": "PPJ",
+      "jogos": [
+        {
+          "partida_id": "1541660",
+          "adversario": "MyPa",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T13:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2243": {
+      "time_id": 2243,
+      "nome": "MyPa",
+      "jogos": [
+        {
+          "partida_id": "1541660",
+          "adversario": "PPJ",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T13:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1163": {
+      "time_id": 1163,
+      "nome": "Ilves",
+      "jogos": [
+        {
+          "partida_id": "1607613",
+          "adversario": "HNK Rijeka",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T13:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "561": {
+      "time_id": 561,
+      "nome": "HNK Rijeka",
+      "jogos": [
+        {
+          "partida_id": "1607613",
+          "adversario": "Ilves",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T13:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "687": {
+      "time_id": 687,
+      "nome": "Flora Tallinn",
+      "jogos": [
+        {
+          "partida_id": "1607614",
+          "adversario": "Inter Club d'Escaldes",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T13:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3342": {
+      "time_id": 3342,
+      "nome": "Inter Club d'Escaldes",
+      "jogos": [
+        {
+          "partida_id": "1607614",
+          "adversario": "Flora Tallinn",
+          "mandante": false,
+          "gols_feitos": 4,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T13:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "556": {
+      "time_id": 556,
+      "nome": "Qarabag",
+      "jogos": [
+        {
+          "partida_id": "1607620",
+          "adversario": "Dynamo Kyiv",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T13:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "572": {
+      "time_id": 572,
+      "nome": "Dynamo Kyiv",
+      "jogos": [
+        {
+          "partida_id": "1607620",
+          "adversario": "Qarabag",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T13:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2951": {
+      "time_id": 2951,
+      "nome": "Abha",
+      "jogos": [
+        {
+          "partida_id": "1602972",
+          "adversario": "Al-Hazm",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T13:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2945": {
+      "time_id": 2945,
+      "nome": "Al-Hazm",
+      "jogos": [
+        {
+          "partida_id": "1602972",
+          "adversario": "Abha",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T13:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "19447": {
+      "time_id": 19447,
+      "nome": "Dinamo Vologda",
+      "jogos": [
+        {
+          "partida_id": "1560908",
+          "adversario": "Tver",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T13:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "14120": {
+      "time_id": 14120,
+      "nome": "Tver",
+      "jogos": [
+        {
+          "partida_id": "1560908",
+          "adversario": "Dinamo Vologda",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T13:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4160": {
+      "time_id": 4160,
+      "nome": "Rīgas FS",
+      "jogos": [
+        {
+          "partida_id": "1607621",
+          "adversario": "FK Jablonec",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T13:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1122": {
+      "time_id": 1122,
+      "nome": "FK Jablonec",
+      "jogos": [
+        {
+          "partida_id": "1607621",
+          "adversario": "Rīgas FS",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T13:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "14866": {
+      "time_id": 14866,
+      "nome": "Varketili",
+      "jogos": [
+        {
+          "partida_id": "1507408",
+          "adversario": "Kolkheti Khobi",
+          "mandante": true,
+          "gols_feitos": 4,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "13853": {
+      "time_id": 13853,
+      "nome": "Kolkheti Khobi",
+      "jogos": [
+        {
+          "partida_id": "1507408",
+          "adversario": "Varketili",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "16091": {
+      "time_id": 16091,
+      "nome": "Blumenthaler SV",
+      "jogos": [
+        {
+          "partida_id": "1604209",
+          "adversario": "Schwachhausen",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "12851": {
+      "time_id": 12851,
+      "nome": "Schwachhausen",
+      "jogos": [
+        {
+          "partida_id": "1604209",
+          "adversario": "Blumenthaler SV",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "16095": {
+      "time_id": 16095,
+      "nome": "Union Bremen",
+      "jogos": [
+        {
+          "partida_id": "1604210",
+          "adversario": "Oberneuland",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4263": {
+      "time_id": 4263,
+      "nome": "Oberneuland",
+      "jogos": [
+        {
+          "partida_id": "1604210",
+          "adversario": "Union Bremen",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "9409": {
+      "time_id": 9409,
+      "nome": "Racing Ferrol",
+      "jogos": [
+        {
+          "partida_id": "1604787",
+          "adversario": "Real Avilés",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "9632": {
+      "time_id": 9632,
+      "nome": "Real Avilés",
+      "jogos": [
+        {
+          "partida_id": "1604787",
+          "adversario": "Racing Ferrol",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3402": {
+      "time_id": 3402,
+      "nome": "Omonia Nicosia",
+      "jogos": [
+        {
+          "partida_id": "1607182",
+          "adversario": "Lincoln Red Imps FC",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "667": {
+      "time_id": 667,
+      "nome": "Lincoln Red Imps FC",
+      "jogos": [
+        {
+          "partida_id": "1607182",
+          "adversario": "Omonia Nicosia",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "632": {
+      "time_id": 632,
+      "nome": "Universitatea Craiova",
+      "jogos": [
+        {
+          "partida_id": "1607183",
+          "adversario": "KuPS",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1165": {
+      "time_id": 1165,
+      "nome": "KuPS",
+      "jogos": [
+        {
+          "partida_id": "1607183",
+          "adversario": "Universitatea Craiova",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "549": {
+      "time_id": 549,
+      "nome": "Beşiktaş",
+      "jogos": [
+        {
+          "partida_id": "1607567",
+          "adversario": "Hradec Králové",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3723": {
+      "time_id": 3723,
+      "nome": "Hradec Králové",
+      "jogos": [
+        {
+          "partida_id": "1607567",
+          "adversario": "Beşiktaş",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "340": {
+      "time_id": 340,
+      "nome": "Gornik Zabrze",
+      "jogos": [
+        {
+          "partida_id": "1607569",
+          "adversario": "Ferencvarosi TC",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "651": {
+      "time_id": 651,
+      "nome": "Ferencvarosi TC",
+      "jogos": [
+        {
+          "partida_id": "1607569",
+          "adversario": "Gornik Zabrze",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3403": {
+      "time_id": 3403,
+      "nome": "Pafos",
+      "jogos": [
+        {
+          "partida_id": "1607571",
+          "adversario": "Red Bull Salzburg",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "571": {
+      "time_id": 571,
+      "nome": "Red Bull Salzburg",
+      "jogos": [
+        {
+          "partida_id": "1607571",
+          "adversario": "Pafos",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "394": {
+      "time_id": 394,
+      "nome": "Dinamo Minsk",
+      "jogos": [
+        {
+          "partida_id": "1607605",
+          "adversario": "SC Braga",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "217": {
+      "time_id": 217,
+      "nome": "SC Braga",
+      "jogos": [
+        {
+          "partida_id": "1607605",
+          "adversario": "Dinamo Minsk",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2257": {
+      "time_id": 2257,
+      "nome": "Dunajska Streda",
+      "jogos": [
+        {
+          "partida_id": "1607606",
+          "adversario": "Twente",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "415": {
+      "time_id": 415,
+      "nome": "Twente",
+      "jogos": [
+        {
+          "partida_id": "1607606",
+          "adversario": "Dunajska Streda",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "363": {
+      "time_id": 363,
+      "nome": "Hammarby FF",
+      "jogos": [
+        {
+          "partida_id": "1607612",
+          "adversario": "Raków Częstochowa",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3491": {
+      "time_id": 3491,
+      "nome": "Raków Częstochowa",
+      "jogos": [
+        {
+          "partida_id": "1607612",
+          "adversario": "Hammarby FF",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "397": {
+      "time_id": 397,
+      "nome": "FC Midtjylland",
+      "jogos": [
+        {
+          "partida_id": "1607615",
+          "adversario": "Bohemians",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3840": {
+      "time_id": 3840,
+      "nome": "Bohemians",
+      "jogos": [
+        {
+          "partida_id": "1607615",
+          "adversario": "FC Midtjylland",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "7808": {
+      "time_id": 7808,
+      "nome": "ML Vitebsk",
+      "jogos": [
+        {
+          "partida_id": "1607616",
+          "adversario": "Borac Banja Luka",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "3364": {
+      "time_id": 3364,
+      "nome": "Borac Banja Luka",
+      "jogos": [
+        {
+          "partida_id": "1607616",
+          "adversario": "ML Vitebsk",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "398": {
+      "time_id": 398,
+      "nome": "FC Nordsjaelland",
+      "jogos": [
+        {
+          "partida_id": "1607618",
+          "adversario": "Valur Reykjavik",
+          "mandante": true,
+          "gols_feitos": 5,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "274": {
+      "time_id": 274,
+      "nome": "Valur Reykjavik",
+      "jogos": [
+        {
+          "partida_id": "1607618",
+          "adversario": "FC Nordsjaelland",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 5,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "325": {
+      "time_id": 325,
+      "nome": "Tromso",
+      "jogos": [
+        {
+          "partida_id": "1607628",
+          "adversario": "CFR 1907 Cluj",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2246": {
+      "time_id": 2246,
+      "nome": "CFR 1907 Cluj",
+      "jogos": [
+        {
+          "partida_id": "1607628",
+          "adversario": "Tromso",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1734": {
+      "time_id": 1734,
+      "nome": "Ivory Coast W",
+      "jogos": [
+        {
+          "partida_id": "1619532",
+          "adversario": "Ghana W",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "15583": {
+      "time_id": 15583,
+      "nome": "Ghana W",
+      "jogos": [
+        {
+          "partida_id": "1619532",
+          "adversario": "Ivory Coast W",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T14:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "278": {
+      "time_id": 278,
+      "nome": "Vikingur Reykjavik",
+      "jogos": [
+        {
+          "partida_id": "1607184",
+          "adversario": "FC Thun",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1012": {
+      "time_id": 1012,
+      "nome": "FC Thun",
+      "jogos": [
+        {
+          "partida_id": "1607184",
+          "adversario": "Vikingur Reykjavik",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T14:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "682": {
+      "time_id": 682,
+      "nome": "NSI Runavik",
+      "jogos": [
+        {
+          "partida_id": "1607619",
+          "adversario": "FC Lugano",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "606": {
+      "time_id": 606,
+      "nome": "FC Lugano",
+      "jogos": [
+        {
+          "partida_id": "1607619",
+          "adversario": "NSI Runavik",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "660": {
+      "time_id": 660,
+      "nome": "FC Vaduz",
+      "jogos": [
+        {
+          "partida_id": "1607629",
+          "adversario": "Inter Turku",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1164": {
+      "time_id": 1164,
+      "nome": "Inter Turku",
+      "jogos": [
+        {
+          "partida_id": "1607629",
+          "adversario": "FC Vaduz",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T14:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "11670": {
+      "time_id": 11670,
+      "nome": "Sleipner",
+      "jogos": [
+        {
+          "partida_id": "1511187",
+          "adversario": "Lindo FF",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27308": {
+      "time_id": 27308,
+      "nome": "Lindo FF",
+      "jogos": [
+        {
+          "partida_id": "1511187",
+          "adversario": "Sleipner",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4167": {
+      "time_id": 4167,
+      "nome": "Ægir",
+      "jogos": [
+        {
+          "partida_id": "1514255",
+          "adversario": "Völsungur",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4166": {
+      "time_id": 4166,
+      "nome": "Völsungur",
+      "jogos": [
+        {
+          "partida_id": "1514255",
+          "adversario": "Ægir",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "277": {
+      "time_id": 277,
+      "nome": "Grindavik",
+      "jogos": [
+        {
+          "partida_id": "1514256",
+          "adversario": "Throttur Reykjavik",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "829": {
+      "time_id": 829,
+      "nome": "Throttur Reykjavik",
+      "jogos": [
+        {
+          "partida_id": "1514256",
+          "adversario": "Grindavik",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4165": {
+      "time_id": 4165,
+      "nome": "Vestri",
+      "jogos": [
+        {
+          "partida_id": "1514257",
+          "adversario": "IR Reykjavik",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2122": {
+      "time_id": 2122,
+      "nome": "IR Reykjavik",
+      "jogos": [
+        {
+          "partida_id": "1514257",
+          "adversario": "Vestri",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27289": {
+      "time_id": 27289,
+      "nome": "América-SP U20",
+      "jogos": [
+        {
+          "partida_id": "1547429",
+          "adversario": "Portuguesa Santista U20",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18344": {
+      "time_id": 18344,
+      "nome": "Portuguesa Santista U20",
+      "jogos": [
+        {
+          "partida_id": "1547429",
+          "adversario": "América-SP U20",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "714": {
+      "time_id": 714,
+      "nome": "Gimnastic",
+      "jogos": [
+        {
+          "partida_id": "1591932",
+          "adversario": "Huesca",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "726": {
+      "time_id": 726,
+      "nome": "Huesca",
+      "jogos": [
+        {
+          "partida_id": "1591932",
+          "adversario": "Gimnastic",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "26738": {
+      "time_id": 26738,
+      "nome": "Al Diriyah",
+      "jogos": [
+        {
+          "partida_id": "1602973",
+          "adversario": "Al-Ahli Jeddah",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2929": {
+      "time_id": 2929,
+      "nome": "Al-Ahli Jeddah",
+      "jogos": [
+        {
+          "partida_id": "1602973",
+          "adversario": "Al Diriyah",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2940": {
+      "time_id": 2940,
+      "nome": "Al Shabab",
+      "jogos": [
+        {
+          "partida_id": "1602974",
+          "adversario": "Al-Qadisiyah FC",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2933": {
+      "time_id": 2933,
+      "nome": "Al-Qadisiyah FC",
+      "jogos": [
+        {
+          "partida_id": "1602974",
+          "adversario": "Al Shabab",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "14281": {
+      "time_id": 14281,
+      "nome": "Drita",
+      "jogos": [
+        {
+          "partida_id": "1605373",
+          "adversario": "Tre Fiori",
+          "mandante": true,
+          "gols_feitos": 5,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2260": {
+      "time_id": 2260,
+      "nome": "Tre Fiori",
+      "jogos": [
+        {
+          "partida_id": "1605373",
+          "adversario": "Drita",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 5,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "853": {
+      "time_id": 853,
+      "nome": "CSKA Sofia",
+      "jogos": [
+        {
+          "partida_id": "1607568",
+          "adversario": "Maccabi Tel Aviv",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "604": {
+      "time_id": 604,
+      "nome": "Maccabi Tel Aviv",
+      "jogos": [
+        {
+          "partida_id": "1607568",
+          "adversario": "CSKA Sofia",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "609": {
+      "time_id": 609,
+      "nome": "Shkendija",
+      "jogos": [
+        {
+          "partida_id": "1607623",
+          "adversario": "Hibernian",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "249": {
+      "time_id": 249,
+      "nome": "Hibernian",
+      "jogos": [
+        {
+          "partida_id": "1607623",
+          "adversario": "Shkendija",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1011": {
+      "time_id": 1011,
+      "nome": "FC ST. Gallen",
+      "jogos": [
+        {
+          "partida_id": "1607626",
+          "adversario": "Sheriff Tiraspol",
+          "mandante": true,
+          "gols_feitos": 5,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "568": {
+      "time_id": 568,
+      "nome": "Sheriff Tiraspol",
+      "jogos": [
+        {
+          "partida_id": "1607626",
+          "adversario": "FC ST. Gallen",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 5,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18677": {
+      "time_id": 18677,
+      "nome": "Argentinos Juniors Res.",
+      "jogos": [
+        {
+          "partida_id": "1611941",
+          "adversario": "Gimnasia La Plata Res.",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18686": {
+      "time_id": 18686,
+      "nome": "Gimnasia La Plata Res.",
+      "jogos": [
+        {
+          "partida_id": "1611941",
+          "adversario": "Argentinos Juniors Res.",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "22938": {
+      "time_id": 22938,
+      "nome": "Independiente Riva. Res.",
+      "jogos": [
+        {
+          "partida_id": "1611942",
+          "adversario": "Ferro 2",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "26250": {
+      "time_id": 26250,
+      "nome": "Ferro 2",
+      "jogos": [
+        {
+          "partida_id": "1611942",
+          "adversario": "Independiente Riva. Res.",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27413": {
+      "time_id": 27413,
+      "nome": "Quilmes 2",
+      "jogos": [
+        {
+          "partida_id": "1611943",
+          "adversario": "Platense Res.",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18693": {
+      "time_id": 18693,
+      "nome": "Platense Res.",
+      "jogos": [
+        {
+          "partida_id": "1611943",
+          "adversario": "Quilmes 2",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18697": {
+      "time_id": 18697,
+      "nome": "San Lorenzo Res.",
+      "jogos": [
+        {
+          "partida_id": "1611944",
+          "adversario": "Barracas Central Res.",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18680": {
+      "time_id": 18680,
+      "nome": "Barracas Central Res.",
+      "jogos": [
+        {
+          "partida_id": "1611944",
+          "adversario": "San Lorenzo Res.",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18700": {
+      "time_id": 18700,
+      "nome": "Tigre Res.",
+      "jogos": [
+        {
+          "partida_id": "1611945",
+          "adversario": "Talleres Córdoba Res.",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18699": {
+      "time_id": 18699,
+      "nome": "Talleres Córdoba Res.",
+      "jogos": [
+        {
+          "partida_id": "1611945",
+          "adversario": "Tigre Res.",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "9570": {
+      "time_id": 9570,
+      "nome": "Atlético Madrid II",
+      "jogos": [
+        {
+          "partida_id": "1618931",
+          "adversario": "Mirandes",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "799": {
+      "time_id": 799,
+      "nome": "Mirandes",
+      "jogos": [
+        {
+          "partida_id": "1618931",
+          "adversario": "Atlético Madrid II",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "630": {
+      "time_id": 630,
+      "nome": "FC Sion",
+      "jogos": [
+        {
+          "partida_id": "1607624",
+          "adversario": "FC Noah",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3684": {
+      "time_id": 3684,
+      "nome": "FC Noah",
+      "jogos": [
+        {
+          "partida_id": "1607624",
+          "adversario": "FC Sion",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "257": {
+      "time_id": 257,
+      "nome": "Rangers",
+      "jogos": [
+        {
+          "partida_id": "1598831",
+          "adversario": "Jagiellonia",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "336": {
+      "time_id": 336,
+      "nome": "Jagiellonia",
+      "jogos": [
+        {
+          "partida_id": "1598831",
+          "adversario": "Rangers",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "554": {
+      "time_id": 554,
+      "nome": "Anderlecht",
+      "jogos": [
+        {
+          "partida_id": "1607566",
+          "adversario": "PAOK",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "619": {
+      "time_id": 619,
+      "nome": "PAOK",
+      "jogos": [
+        {
+          "partida_id": "1607566",
+          "adversario": "Anderlecht",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "601": {
+      "time_id": 601,
+      "nome": "Austria Vienna",
+      "jogos": [
+        {
+          "partida_id": "1607602",
+          "adversario": "Beitar Jerusalem",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "657": {
+      "time_id": 657,
+      "nome": "Beitar Jerusalem",
+      "jogos": [
+        {
+          "partida_id": "1607602",
+          "adversario": "Austria Vienna",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "631": {
+      "time_id": 631,
+      "nome": "Gent",
+      "jogos": [
+        {
+          "partida_id": "1607608",
+          "adversario": "IFK Goteborg",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "366": {
+      "time_id": 366,
+      "nome": "IFK Goteborg",
+      "jogos": [
+        {
+          "partida_id": "1607608",
+          "adversario": "Gent",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2402": {
+      "time_id": 2402,
+      "nome": "Gyori ETO FC",
+      "jogos": [
+        {
+          "partida_id": "1607610",
+          "adversario": "Riga",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "10124": {
+      "time_id": 10124,
+      "nome": "Riga",
+      "jogos": [
+        {
+          "partida_id": "1607610",
+          "adversario": "Gyori ETO FC",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "256": {
+      "time_id": 256,
+      "nome": "Motherwell",
+      "jogos": [
+        {
+          "partida_id": "1607617",
+          "adversario": "HJK Helsinki",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "649": {
+      "time_id": 649,
+      "nome": "HJK Helsinki",
+      "jogos": [
+        {
+          "partida_id": "1607617",
+          "adversario": "Motherwell",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "254": {
+      "time_id": 254,
+      "nome": "Heart Of Midlothian",
+      "jogos": [
+        {
+          "partida_id": "1607570",
+          "adversario": "Benfica",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:45:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "211": {
+      "time_id": 211,
+      "nome": "Benfica",
+      "jogos": [
+        {
+          "partida_id": "1607570",
+          "adversario": "Heart Of Midlothian",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T15:45:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3854": {
+      "time_id": 3854,
+      "nome": "Shelbourne",
+      "jogos": [
+        {
+          "partida_id": "1607622",
+          "adversario": "Ajax",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:45:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "194": {
+      "time_id": 194,
+      "nome": "Ajax",
+      "jogos": [
+        {
+          "partida_id": "1607622",
+          "adversario": "Shelbourne",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T15:45:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3327": {
+      "time_id": 3327,
+      "nome": "Egnatia Rrogozhinë",
+      "jogos": [
+        {
+          "partida_id": "1606353",
+          "adversario": "Shamrock Rovers",
+          "mandante": true,
+          "gols_feitos": 5,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T16:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "652": {
+      "time_id": 652,
+      "nome": "Shamrock Rovers",
+      "jogos": [
+        {
+          "partida_id": "1606353",
+          "adversario": "Egnatia Rrogozhinë",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 5,
+          "estatisticas": {},
+          "data": "2026-08-13T16:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3326": {
+      "time_id": 3326,
+      "nome": "Dinamo Tirana",
+      "jogos": [
+        {
+          "partida_id": "1607604",
+          "adversario": "Auda",
+          "mandante": true,
+          "gols_feitos": 4,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T16:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4135": {
+      "time_id": 4135,
+      "nome": "Auda",
+      "jogos": [
+        {
+          "partida_id": "1607604",
+          "adversario": "Dinamo Tirana",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T16:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "608": {
+      "time_id": 608,
+      "nome": "HNK Hajduk Split",
+      "jogos": [
+        {
+          "partida_id": "1607611",
+          "adversario": "FK Zalgiris Vilnius",
+          "mandante": true,
+          "gols_feitos": 4,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T16:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "586": {
+      "time_id": 586,
+      "nome": "FK Zalgiris Vilnius",
+      "jogos": [
+        {
+          "partida_id": "1607611",
+          "adversario": "HNK Hajduk Split",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T16:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "267": {
+      "time_id": 267,
+      "nome": "Fylkir",
+      "jogos": [
+        {
+          "partida_id": "1514258",
+          "adversario": "Afturelding",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T16:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3514": {
+      "time_id": 3514,
+      "nome": "Afturelding",
+      "jogos": [
+        {
+          "partida_id": "1514258",
+          "adversario": "Fylkir",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T16:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2121": {
+      "time_id": 2121,
+      "nome": "Grotta",
+      "jogos": [
+        {
+          "partida_id": "1514259",
+          "adversario": "Njardvik",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T16:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2123": {
+      "time_id": 2123,
+      "nome": "Njardvik",
+      "jogos": [
+        {
+          "partida_id": "1514259",
+          "adversario": "Grotta",
+          "mandante": false,
+          "gols_feitos": 4,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T16:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2113": {
+      "time_id": 2113,
+      "nome": "HK Kopavogur",
+      "jogos": [
+        {
+          "partida_id": "1514260",
+          "adversario": "Leiknir R.",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T16:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2114": {
+      "time_id": 2114,
+      "nome": "Leiknir R.",
+      "jogos": [
+        {
+          "partida_id": "1514260",
+          "adversario": "HK Kopavogur",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T16:15:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "10463": {
+      "time_id": 10463,
+      "nome": "1 de Marzo Pilar",
+      "jogos": [
+        {
+          "partida_id": "1612593",
+          "adversario": "Atlético Tembetary",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T16:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "10474": {
+      "time_id": 10474,
+      "nome": "Atlético Tembetary",
+      "jogos": [
+        {
+          "partida_id": "1612593",
+          "adversario": "1 de Marzo Pilar",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T16:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27663": {
+      "time_id": 27663,
+      "nome": "Astillero FC (Ecu)",
+      "jogos": [
+        {
+          "partida_id": "1547790",
+          "adversario": "Daquilema FC",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T17:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "27666": {
+      "time_id": 27666,
+      "nome": "Daquilema FC",
+      "jogos": [
+        {
+          "partida_id": "1547790",
+          "adversario": "Astillero FC (Ecu)",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T17:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18682": {
+      "time_id": 18682,
+      "nome": "Central Córdoba SdE Res.",
+      "jogos": [
+        {
+          "partida_id": "1611946",
+          "adversario": "Independiente Res.",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T17:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "18689": {
+      "time_id": 18689,
+      "nome": "Independiente Res.",
+      "jogos": [
+        {
+          "partida_id": "1611946",
+          "adversario": "Central Córdoba SdE Res.",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T17:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1978": {
+      "time_id": 1978,
+      "nome": "South Africa W",
+      "jogos": [
+        {
+          "partida_id": "1619533",
+          "adversario": "Nigeria W",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T17:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1730": {
+      "time_id": 1730,
+      "nome": "Nigeria W",
+      "jogos": [
+        {
+          "partida_id": "1619533",
+          "adversario": "South Africa W",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T17:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "16476": {
+      "time_id": 16476,
+      "nome": "Cumbayá",
+      "jogos": [
+        {
+          "partida_id": "1526596",
+          "adversario": "Santo Domingo",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T17:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "19414": {
+      "time_id": 19414,
+      "nome": "Santo Domingo",
+      "jogos": [
+        {
+          "partida_id": "1526596",
+          "adversario": "Cumbayá",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T17:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1150": {
+      "time_id": 1150,
+      "nome": "El Nacional",
+      "jogos": [
+        {
+          "partida_id": "1526597",
+          "adversario": "San Antonio",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T17:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "23310": {
+      "time_id": 23310,
+      "nome": "San Antonio",
+      "jogos": [
+        {
+          "partida_id": "1526597",
+          "adversario": "El Nacional",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T17:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "21103": {
+      "time_id": 21103,
+      "nome": "Cuniburo",
+      "jogos": [
+        {
+          "partida_id": "1526600",
+          "adversario": "LDU Portoviejo",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T17:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1988": {
+      "time_id": 1988,
+      "nome": "LDU Portoviejo",
+      "jogos": [
+        {
+          "partida_id": "1526600",
+          "adversario": "Cuniburo",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T17:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2322": {
+      "time_id": 2322,
+      "nome": "San Luis",
+      "jogos": [
+        {
+          "partida_id": "1511647",
+          "adversario": "Deportes Temuco",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T19:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2317": {
+      "time_id": 2317,
+      "nome": "Deportes Temuco",
+      "jogos": [
+        {
+          "partida_id": "1511647",
+          "adversario": "San Luis",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T19:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "7848": {
+      "time_id": 7848,
+      "nome": "Mirassol",
+      "jogos": [
+        {
+          "partida_id": "1547761",
+          "adversario": "LDU de Quito",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T19:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1158": {
+      "time_id": 1158,
+      "nome": "LDU de Quito",
+      "jogos": [
+        {
+          "partida_id": "1547761",
+          "adversario": "Mirassol",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T19:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "128": {
+      "time_id": 128,
+      "nome": "Santos",
+      "jogos": [
+        {
+          "partida_id": "1606076",
+          "adversario": "Macara",
+          "mandante": true,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T19:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1155": {
+      "time_id": 1155,
+      "nome": "Macara",
+      "jogos": [
+        {
+          "partida_id": "1606076",
+          "adversario": "Santos",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T19:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1599": {
+      "time_id": 1599,
+      "nome": "Philadelphia Union",
+      "jogos": [
+        {
+          "partida_id": "1530158",
+          "adversario": "Santos Laguna",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T20:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2285": {
+      "time_id": 2285,
+      "nome": "Santos Laguna",
+      "jogos": [
+        {
+          "partida_id": "1530158",
+          "adversario": "Philadelphia Union",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T20:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1604": {
+      "time_id": 1604,
+      "nome": "New York City FC",
+      "jogos": [
+        {
+          "partida_id": "1530157",
+          "adversario": "Necaxa",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T20:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2288": {
+      "time_id": 2288,
+      "nome": "Necaxa",
+      "jogos": [
+        {
+          "partida_id": "1530157",
+          "adversario": "New York City FC",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T20:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2881": {
+      "time_id": 2881,
+      "nome": "Alianza FC",
+      "jogos": [
+        {
+          "partida_id": "1548357",
+          "adversario": "UMECIT",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T21:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "20788": {
+      "time_id": 20788,
+      "nome": "UMECIT",
+      "jogos": [
+        {
+          "partida_id": "1548357",
+          "adversario": "Alianza FC",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T21:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2316": {
+      "time_id": 2316,
+      "nome": "Curico Unido",
+      "jogos": [
+        {
+          "partida_id": "1511642",
+          "adversario": "Deportes Santa Cruz",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T21:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2346": {
+      "time_id": 2346,
+      "nome": "Deportes Santa Cruz",
+      "jogos": [
+        {
+          "partida_id": "1511642",
+          "adversario": "Curico Unido",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T21:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2319": {
+      "time_id": 2319,
+      "nome": "Deportes Iquique",
+      "jogos": [
+        {
+          "partida_id": "1511643",
+          "adversario": "Deportes Copiapo",
+          "mandante": true,
+          "gols_feitos": 4,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T21:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2343": {
+      "time_id": 2343,
+      "nome": "Deportes Copiapo",
+      "jogos": [
+        {
+          "partida_id": "1511643",
+          "adversario": "Deportes Iquique",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T21:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2287": {
+      "time_id": 2287,
+      "nome": "Club America",
+      "jogos": [
+        {
+          "partida_id": "1530155",
+          "adversario": "Austin",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T21:30:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "16489": {
+      "time_id": 16489,
+      "nome": "Austin",
+      "jogos": [
+        {
+          "partida_id": "1530155",
+          "adversario": "Club America",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T21:30:00-03:00",
+          "status": "PEN"
+        }
+      ]
+    },
+    "437": {
+      "time_id": 437,
+      "nome": "Rosario Central",
+      "jogos": [
+        {
+          "partida_id": "1547764",
+          "adversario": "Corinthians",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T21:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "131": {
+      "time_id": 131,
+      "nome": "Corinthians",
+      "jogos": [
+        {
+          "partida_id": "1547764",
+          "adversario": "Rosario Central",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T21:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2295": {
+      "time_id": 2295,
+      "nome": "Cruz Azul",
+      "jogos": [
+        {
+          "partida_id": "1530156",
+          "adversario": "Chicago Fire",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 2,
+          "estatisticas": {},
+          "data": "2026-08-13T22:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1607": {
+      "time_id": 1607,
+      "nome": "Chicago Fire",
+      "jogos": [
+        {
+          "partida_id": "1530156",
+          "adversario": "Cruz Azul",
+          "mandante": false,
+          "gols_feitos": 2,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T22:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2300": {
+      "time_id": 2300,
+      "nome": "Alebrijes de Oaxaca",
+      "jogos": [
+        {
+          "partida_id": "1581387",
+          "adversario": "Tepatitlán",
+          "mandante": true,
+          "gols_feitos": 1,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T22:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "14279": {
+      "time_id": 14279,
+      "nome": "Tepatitlán",
+      "jogos": [
+        {
+          "partida_id": "1581387",
+          "adversario": "Alebrijes de Oaxaca",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T22:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "3656": {
+      "time_id": 3656,
+      "nome": "Antigua GFC",
+      "jogos": [
+        {
+          "partida_id": "1548358",
+          "adversario": "CD Marathon",
+          "mandante": true,
+          "gols_feitos": 0,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T23:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1050": {
+      "time_id": 1050,
+      "nome": "CD Marathon",
+      "jogos": [
+        {
+          "partida_id": "1548358",
+          "adversario": "Antigua GFC",
+          "mandante": false,
+          "gols_feitos": 3,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T23:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4303": {
+      "time_id": 4303,
+      "nome": "Firpo",
+      "jogos": [
+        {
+          "partida_id": "1548359",
+          "adversario": "Diriangén",
+          "mandante": true,
+          "gols_feitos": 4,
+          "gols_sofridos": 0,
+          "estatisticas": {},
+          "data": "2026-08-13T23:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "4641": {
+      "time_id": 4641,
+      "nome": "Diriangén",
+      "jogos": [
+        {
+          "partida_id": "1548359",
+          "adversario": "Firpo",
+          "mandante": false,
+          "gols_feitos": 0,
+          "gols_sofridos": 4,
+          "estatisticas": {},
+          "data": "2026-08-13T23:00:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "1617": {
+      "time_id": 1617,
+      "nome": "Portland Timbers",
+      "jogos": [
+        {
+          "partida_id": "1530159",
+          "adversario": "Club Tijuana",
+          "mandante": true,
+          "gols_feitos": 3,
+          "gols_sofridos": 1,
+          "estatisticas": {},
+          "data": "2026-08-13T23:30:00-03:00",
+          "status": "FT"
+        }
+      ]
+    },
+    "2280": {
+      "time_id": 2280,
+      "nome": "Club Tijuana",
+      "jogos": [
+        {
+          "partida_id": "1530159",
+          "adversario": "Portland Timbers",
+          "mandante": false,
+          "gols_feitos": 1,
+          "gols_sofridos": 3,
+          "estatisticas": {},
+          "data": "2026-08-13T23:30:00-03:00",
+          "status": "FT"
+        }
+      ]
     }
   },
   "historico_jogadores": {
